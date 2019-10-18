@@ -1,14 +1,12 @@
 {
-  "name": "react-redux-typescript-boilerplate",
-  "version": "1.0.1",
+  "name": "front-end",
+  "version": "0.0.1",
   "private": true,
-  "description": "A frontend boilerplate with React, Redux and Typescript",
-  "homepage": "https://rokoroku.github.io/react-redux-typescript-boilerplate",
+  "description": "Diplom  front-end",
   "keywords": [
     "react",
     "redux",
-    "typescript",
-    "boilerplate"
+    "typescript"
   ],
   "main": "index.js",
   "scripts": {
@@ -54,6 +52,7 @@
     "ts-loader": "^5.3.3",
     "typescript": "^3.2.4",
     "typescript-fsa": "^3.0.0",
+    "typescript-fsa-reducers": "^1.2.1",
     "url-loader": "^1.1.2",
     "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1",

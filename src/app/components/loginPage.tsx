@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../redux/actions/todos';
+import * as actions from '../redux/actions/login';
 
 export const LoginPage = (props: any) => (
   <div>
