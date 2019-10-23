@@ -1,12 +1,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../redux/actions/login';
+import * as actions from '../../redux/actions/login';
+import * as styled from './loginPage.styled';
 
-export const LoginPage = (props: any) => (
-  <div>
-    Login page <button onClick={props.login}>CLICK</button>
-  </div>
-);
+export const LoginPage = (props: any) => {
+  const onClick = () => props.login('sdsd');
+  return (
+    <styled.Container>
+      Login page <button onClick={onClick}>CLICK</button>
+    </styled.Container>
+  );
+};
 
 export const LoginPageConnected = connect(
   // (state) => {
@@ -25,6 +29,6 @@ export const LoginPageConnected = connect(
   // },
   null,
   (dispatch) => ({
-    login: () => dispatch(actions.setText())
+    login: (value: string) => dispatch(actions.setText(value))
   })
 )(LoginPage);

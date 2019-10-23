@@ -11,6 +11,10 @@ var outPath = path.join(__dirname, './build');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
+const createStyledComponentsTransformer = require('typescript-plugin-styled-components')
+  .createTransformer;
+
+const styledComponentsTransformer = createStyledComponentsTransformer();
 
 module.exports = {
   context: sourcePath,
@@ -35,15 +39,37 @@ module.exports = {
   module: {
     rules: [
       // .ts, .tsx
+      // {
+      //   test: /\.tsx?$/,
+      //   use: [
+      //     !isProduction && {
+      //       loader: 'babel-loader',
+      //       options: {
+      //         plugins: ['react-hot-loader/babel']
+      //       }
+      //       // options: {
+      //       //   onlyCompileBundledFiles: true,
+      //       // }
+      //     },
+      //     'ts-loader'
+      //   ].filter(Boolean)
+      //   // options: {
+      //   //   onlyCompileBundledFiles: true,
+      //   //   getCustomTransformers: () => ({
+      //   //     before: [styledComponentsTransformer]
+      //   //   })
+      //   // }
+      // },
       {
         test: /\.tsx?$/,
-        use: [
-          !isProduction && {
-            loader: 'babel-loader',
-            options: { plugins: ['react-hot-loader/babel'] }
-          },
-          'ts-loader'
-        ].filter(Boolean)
+        include: [path.join(__dirname, './src')],
+        loader: 'ts-loader',
+        options: {
+          onlyCompileBundledFiles: true,
+          getCustomTransformers: () => ({
+            before: [styledComponentsTransformer]
+          })
+        }
       },
       // css
       {

@@ -5,7 +5,7 @@ import createSagaMiddleware from 'redux-saga';
 import { rootReducer } from 'app/redux/reducers';
 import { all } from 'redux-saga/effects';
 import { saga as mainSaga } from './sagas/login';
-import { IRootState } from 'app/redux/reducers/state';
+import { IRootState } from 'app/redux/reducers';
 
 export function configureStore(): Store<IRootState> {
   const sagaMiddleware = createSagaMiddleware();

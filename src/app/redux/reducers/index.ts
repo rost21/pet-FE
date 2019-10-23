@@ -1,8 +1,10 @@
 import { combineReducers } from 'redux';
-import { todoReducer } from './login';
+import { reducer as loginReducer, IReducerShape } from './login';
 
-// NOTE: current type definition of Reducer in 'redux-actions' module
-// doesn't go well with redux@4
-export const rootReducer = combineReducers({
-  todos: todoReducer as any
+export interface IRootState {
+  login: IReducerShape;
+}
+
+export const rootReducer = combineReducers<IRootState>({
+  login: loginReducer as any
 });
