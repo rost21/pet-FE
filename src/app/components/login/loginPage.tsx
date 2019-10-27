@@ -1,16 +1,73 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../redux/actions/login';
-import * as styled from './loginPage.styled';
+import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import { LoginFormContainer, LoginForm, LoginFormTitle } from './styled';
+import { FormComponentProps } from 'antd/lib/form';
+import { RouteComponentProps } from 'react-router';
 
-export const LoginPage = (props: any) => {
-  const onClick = () => props.login('sdsd');
+interface IProps extends FormComponentProps, RouteComponentProps {}
+
+const LoginPage: React.FC<IProps> = (props) => {
+  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    props.form.validateFields(
+      (err: any, values: { password: string; remember: boolean; username: string }) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+          props.history.push('/main');
+        }
+      }
+    );
+  };
+
+  const { getFieldDecorator } = props.form;
   return (
-    <styled.Container>
-      Login page <button onClick={onClick}>CLICK</button>
-    </styled.Container>
+    <LoginFormContainer>
+      <LoginForm onSubmit={handleSubmit}>
+        <LoginFormTitle>
+          <Icon type="lock" /> Login
+        </LoginFormTitle>
+        <Form.Item>
+          {getFieldDecorator('username', {
+            rules: [{ required: true, message: 'Please input your username!' }]
+          })(
+            <Input
+              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              placeholder="Username"
+            />
+          )}
+        </Form.Item>
+        <Form.Item>
+          {getFieldDecorator('password', {
+            rules: [{ required: true, message: 'Please input your Password!' }]
+          })(
+            <Input
+              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              type="password"
+              placeholder="Password"
+            />
+          )}
+        </Form.Item>
+        <Form.Item>
+          {getFieldDecorator('remember', {
+            valuePropName: 'checked',
+            initialValue: true
+          })(<Checkbox>Remember me</Checkbox>)}
+          <a className="login-form-forgot" href="">
+            Forgot password
+          </a>
+          <Button type="primary" htmlType="submit" className="login-form-button">
+            Log in
+          </Button>
+          Or <a href="">register now!</a>
+        </Form.Item>
+      </LoginForm>
+    </LoginFormContainer>
   );
 };
+
+const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(LoginPage);
 
 export const LoginPageConnected = connect(
   // (state) => {
@@ -31,4 +88,4 @@ export const LoginPageConnected = connect(
   (dispatch) => ({
     login: (value: string) => dispatch(actions.setText(value))
   })
-)(LoginPage);
+)(WrappedNormalLoginForm);

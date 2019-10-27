@@ -15,7 +15,7 @@ export function configureStore(): Store<IRootState> {
     middleware = composeWithDevTools(middleware);
   }
 
-  const store = createStore(rootReducer as any, middleware) as Store<IRootState>;
+  const store = createStore(rootReducer, middleware) as Store<IRootState>;
 
   if (module.hot) {
     module.hot.accept('../redux/reducers', () => {

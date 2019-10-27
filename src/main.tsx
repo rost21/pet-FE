@@ -5,6 +5,7 @@ import { createBrowserHistory } from 'history';
 import { configureStore } from 'app/redux/store';
 import { Router } from 'react-router';
 import { App } from './app';
+// import { BrowserRouter } from 'react-router-dom';
 
 // prepare store
 const history = createBrowserHistory();
