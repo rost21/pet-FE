@@ -5,9 +5,9 @@ import createSagaMiddleware from 'redux-saga';
 import { rootReducer } from 'app/redux/reducers';
 import { all } from 'redux-saga/effects';
 import { saga as mainSaga } from './sagas/login';
-import { IRootState } from 'app/redux/reducers';
+import { IRootReducer } from 'app/redux/reducers';
 
-export function configureStore(): Store<IRootState> {
+export function configureStore(): Store<IRootReducer> {
   const sagaMiddleware = createSagaMiddleware();
   let middleware = applyMiddleware(logger, sagaMiddleware);
 
@@ -15,7 +15,7 @@ export function configureStore(): Store<IRootState> {
     middleware = composeWithDevTools(middleware);
   }
 
-  const store = createStore(rootReducer, middleware) as Store<IRootState>;
+  const store = createStore(rootReducer, middleware) as Store<IRootReducer>;
 
   if (module.hot) {
     module.hot.accept('../redux/reducers', () => {

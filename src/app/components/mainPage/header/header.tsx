@@ -3,27 +3,23 @@ import { Icon, Popover } from 'antd';
 import { connect } from 'react-redux';
 import { PopoverRow, HeaderContainer } from './styled';
 import ROUTES from '../../../routes';
-
-interface IProps {
-  collapsed: boolean;
-  onCollapse: () => void;
-}
+import { IProps } from './types';
 
 const Header: React.FC<IProps> = (props) => {
   console.log(props);
   const popoverContent = (
     <>
-      <PopoverRow onClick={() => window.location.replace(ROUTES.MAIN)}>
+      <PopoverRow onClick={() => props.replace(ROUTES.MAIN)}>
         <Icon type="home" theme="filled" style={{ paddingRight: 10 }} />
         Dashboard
       </PopoverRow>
 
-      <PopoverRow onClick={() => window.location.replace(ROUTES.PROFILE)}>
+      <PopoverRow onClick={() => props.replace(ROUTES.PROFILE)}>
         <Icon type="profile" theme="filled" style={{ paddingRight: 10 }} />
         My Profile
       </PopoverRow>
 
-      <PopoverRow onClick={() => window.location.replace(ROUTES.LOGIN)}>
+      <PopoverRow onClick={() => props.replace(ROUTES.LOGIN)}>
         <Icon type="unlock" theme="filled" style={{ paddingRight: 10 }} />
         Logout
       </PopoverRow>

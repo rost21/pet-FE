@@ -26,7 +26,7 @@ const MainPage: React.FC<IProps> = (props) => {
     <StyledLayout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo">Project</div>
-        <Menu theme="dark" mode="inline" defaultSelectedKeys={[selectedKey || 'main']}>
+        <Menu theme="dark" mode="inline" selectedKeys={[selectedKey || 'main']}>
           <Menu.Item key="main" onClick={() => redirectTo(ROUTES.MAIN)}>
             <Icon type="home" />
             <span>Dashboard</span>
@@ -52,7 +52,11 @@ const MainPage: React.FC<IProps> = (props) => {
             justifyContent: 'center'
           }}
         >
-          <HeaderComponent collapsed={collapsed} onCollapse={onCollapse} />
+          <HeaderComponent
+            replace={props.history.push}
+            collapsed={collapsed}
+            onCollapse={onCollapse}
+          />
         </Header>
         <Content
           style={{
