@@ -32,7 +32,7 @@ const MainPage: React.FC<IProps> = (props) => {
             <span>Dashboard</span>
           </Menu.Item>
           <Menu.Item key="projects" onClick={() => redirectTo(ROUTES.PROJECTS)}>
-            <Icon type="video-camera" />
+            <Icon type="appstore" />
             <span>Projects</span>
           </Menu.Item>
           <Menu.Item key="profile" onClick={() => redirectTo(ROUTES.PROFILE)}>

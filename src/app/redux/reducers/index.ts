@@ -6,5 +6,5 @@ export interface IRootReducer {
 }
 
 export const rootReducer = combineReducers<IRootReducer>({
-  login: loginReducer as any
+  login: loginReducer
 });
