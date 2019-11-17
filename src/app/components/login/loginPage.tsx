@@ -1,10 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../redux/actions/login';
-import { Form, Icon, Input, Button, Checkbox } from 'antd';
+import * as actions from '../../redux/login/actions';
+import { Input, Button } from 'antd';
+import Form from 'antd/lib/form';
+import Icon from 'antd/lib/icon';
 import { LoginFormContainer, LoginForm, LoginFormTitle } from './styled';
 import { FormComponentProps } from 'antd/lib/form';
 import { RouteComponentProps } from 'react-router';
+import ROUTES from '../../routes';
 
 interface IProps extends FormComponentProps, RouteComponentProps {}
 
@@ -15,7 +18,7 @@ const LoginPage: React.FC<IProps> = (props) => {
       (err: any, values: { password: string; remember: boolean; username: string }) => {
         if (!err) {
           console.log('Received values of form: ', values);
-          props.history.push('/main');
+          props.history.push(ROUTES.MAIN);
         }
       }
     );
@@ -50,17 +53,13 @@ const LoginPage: React.FC<IProps> = (props) => {
           )}
         </Form.Item>
         <Form.Item>
-          {getFieldDecorator('remember', {
-            valuePropName: 'checked',
-            initialValue: true
-          })(<Checkbox>Remember me</Checkbox>)}
-          <a className="login-form-forgot" href="">
-            Forgot password
-          </a>
           <Button type="primary" htmlType="submit" className="login-form-button">
             Log in
           </Button>
-          Or <a href="">register now!</a>
+          Or <a onClick={() => props.history.push(ROUTES.REGISTRATION)}>register now!</a>
+          <a className="login-form-forgot" href="">
+            Forgot password
+          </a>
         </Form.Item>
       </LoginForm>
     </LoginFormContainer>

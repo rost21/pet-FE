@@ -5,16 +5,21 @@ import { createBrowserHistory } from 'history';
 import { configureStore } from 'app/redux/store';
 import { Router } from 'react-router';
 import { App } from './app';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.min.css';
 // import { BrowserRouter } from 'react-router-dom';
 
 // prepare store
-const history = createBrowserHistory();
+export const history = createBrowserHistory();
 const store = configureStore();
 
 ReactDOM.render(
   <Provider store={store}>
     <Router history={history}>
-      <App />
+      <>
+        <App />
+        <ToastContainer />
+      </>
     </Router>
   </Provider>,
   document.getElementById('root')

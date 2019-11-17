@@ -5,6 +5,7 @@ import { LoginPageConnected } from './components/login/loginPage';
 import 'antd/dist/antd.css';
 import { MainPageConnected } from './components/mainPage/mainPage';
 import ROUTES from './routes';
+import { RegistrationPageConnected } from './components/registration/registration';
 
 export const App = hot(module)(() => (
   <div
@@ -20,9 +21,10 @@ export const App = hot(module)(() => (
     }}
   >
     <Switch>
-      <Route path={`${ROUTES.LOGIN}`} component={LoginPageConnected} />
-      <Route path={`${ROUTES.MAIN}`} component={MainPageConnected} />
-      <Redirect to={`${ROUTES.LOGIN}`} />
+      <Route path={ROUTES.LOGIN} component={LoginPageConnected} />
+      <Route path={ROUTES.REGISTRATION} component={RegistrationPageConnected} />
+      <Route path={ROUTES.MAIN} component={MainPageConnected} />
+      <Redirect to={ROUTES.LOGIN} />
     </Switch>
   </div>
 ));

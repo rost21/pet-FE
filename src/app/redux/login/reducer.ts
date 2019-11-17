@@ -1,5 +1,5 @@
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
-import * as actions from '../actions/login';
+import * as actions from './actions';
 
 export interface IReducerShape {
   id: number;
