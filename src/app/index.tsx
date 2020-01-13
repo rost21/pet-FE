@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Route, Switch, Redirect } from 'react-router';
 import { hot } from 'react-hot-loader';
-import { LoginPageConnected } from './components/login/loginPage';
+import { LoginPageConnected } from 'app/scenes/login/loginPage';
+import { RegistrationPageConnected } from 'app/scenes/registration/registration';
+import { MainPageConnected } from 'app/scenes/mainPage/mainPage';
 import 'antd/dist/antd.css';
-import { MainPageConnected } from './components/mainPage/mainPage';
 import ROUTES from './routes';
-import { RegistrationPageConnected } from './components/registration/registration';
 
 export const App = hot(module)(() => (
   <div

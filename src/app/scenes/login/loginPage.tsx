@@ -1,24 +1,26 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../redux/login/actions';
-import { Input, Button } from 'antd';
-import Form from 'antd/lib/form';
-import Icon from 'antd/lib/icon';
+import { Form, Icon, Input, Button } from 'antd';
 import { LoginFormContainer, LoginForm, LoginFormTitle } from './styled';
 import { FormComponentProps } from 'antd/lib/form';
 import { RouteComponentProps } from 'react-router';
 import ROUTES from '../../routes';
+import { ILoginUserVariables } from '../../redux/types';
+import * as actions from '../../redux/auth/actions';
 
-interface IProps extends FormComponentProps, RouteComponentProps {}
+interface IDispatchProps {
+  login: (values: ILoginUserVariables) => void;
+}
+
+interface IProps extends FormComponentProps, RouteComponentProps, IDispatchProps {}
 
 const LoginPage: React.FC<IProps> = (props) => {
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     props.form.validateFields(
-      (err: any, values: { password: string; remember: boolean; username: string }) => {
+      (err: any, values: { password: string; username: string }) => {
         if (!err) {
-          console.log('Received values of form: ', values);
-          props.history.push(ROUTES.MAIN);
+          props.login(values);
         }
       }
     );
@@ -29,11 +31,15 @@ const LoginPage: React.FC<IProps> = (props) => {
     <LoginFormContainer>
       <LoginForm onSubmit={handleSubmit}>
         <LoginFormTitle>
-          <Icon type="lock" /> Login
+          <Icon type="lock" /> Username
         </LoginFormTitle>
         <Form.Item>
           {getFieldDecorator('username', {
-            rules: [{ required: true, message: 'Please input your username!' }]
+            validateTrigger: 'onSubmit',
+            rules: [
+              { required: true, message: 'Please input your username!' },
+              { min: 6, message: 'Minimum length of login is 6' }
+            ]
           })(
             <Input
               prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -43,7 +49,11 @@ const LoginPage: React.FC<IProps> = (props) => {
         </Form.Item>
         <Form.Item>
           {getFieldDecorator('password', {
-            rules: [{ required: true, message: 'Please input your Password!' }]
+            validateTrigger: 'onSubmit',
+            rules: [
+              { required: true, message: 'Please input your Password!' },
+              { min: 6, message: 'Minimum length of password is 6' }
+            ]
           })(
             <Input
               prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -84,7 +94,7 @@ export const LoginPageConnected = connect(
   //   }
   // },
   null,
-  (dispatch) => ({
-    login: (value: string) => dispatch(actions.setText(value))
+  (dispatch): IDispatchProps => ({
+    login: (values: ILoginUserVariables) => dispatch(actions.login.started(values))
   })
 )(WrappedNormalLoginForm);

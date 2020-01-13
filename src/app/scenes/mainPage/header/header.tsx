@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import { PopoverRow, HeaderContainer } from './styled';
 import ROUTES from '../../../routes';
 import { IProps } from './types';
+import { logout } from '../../../redux/auth/actions';
 
 const Header: React.FC<IProps> = (props) => {
-  console.log(props);
   const popoverContent = (
     <>
       <PopoverRow onClick={() => props.replace(ROUTES.MAIN)}>
@@ -19,7 +19,7 @@ const Header: React.FC<IProps> = (props) => {
         My Profile
       </PopoverRow>
 
-      <PopoverRow onClick={() => props.replace(ROUTES.LOGIN)}>
+      <PopoverRow onClick={props.logout}>
         <Icon type="unlock" theme="filled" style={{ paddingRight: 10 }} />
         Logout
       </PopoverRow>
@@ -51,23 +51,8 @@ const Header: React.FC<IProps> = (props) => {
 };
 
 export const HeaderConnected = connect(
-  // (state) => {
-  //   const comeFrom =
-  //     get(
-  //       state.modals.openedModalWindows.find(
-  //         m => m.type === ModalTypes.MOBILE_FULL_SCREEN_VIEW_ACTIONS
-  //       ),
-  //       'extra.comeFrom'
-  //     ) || ''
-  //   return {
-  //     isAuthenticated: state.auth.isLoggedIn,
-  //     publicImage: isReportEnabled(state) ? state.search.selectedImageId : '',
-  //     comeFrom
-  //   }
-  // },
   null,
-  // (dispatch) => ({
-  //   login: (value: string) => dispatch(actions.setText(value))
-  // })
-  null
+  (dispatch) => ({
+    logout: () => dispatch(logout())
+  })
 )(Header);

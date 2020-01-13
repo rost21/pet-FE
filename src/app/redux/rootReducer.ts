@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
-import { reducer as loginReducer, IReducerShape } from './login/reducer';
+import { reducer as authReducer, IReducerShape } from './auth/reducer';
 
 export interface IRootReducer {
-  login: IReducerShape;
+  auth: IReducerShape;
 }
 
 export const rootReducer = combineReducers<IRootReducer>({
-  login: loginReducer
+  auth: authReducer
 });

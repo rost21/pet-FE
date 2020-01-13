@@ -1,16 +1,20 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../../redux/registration/actions';
+import * as actions from '../../redux/auth/actions';
 import { Input, Button, Form, Icon } from 'antd';
 import { LoginFormContainer, LoginForm, LoginFormTitle } from './styled';
 import { FormComponentProps } from 'antd/lib/form';
 import { RouteComponentProps } from 'react-router';
-import { toast } from 'react-toastify';
-import ROUTES from '../../routes';
-import { IRegisterUserVariables } from '../types';
+import ROUTES from 'app/routes';
+import { IRegisterUserVariables } from '../../redux/types';
+import { showNotification } from 'app/utils/notifications';
+
+const emailRegExp = new RegExp(
+  /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
+);
 
 interface IDispatchProps {
-  registration: (values: object) => void;
+  registration: (values: IRegisterUserVariables) => void;
 }
 
 interface IProps extends FormComponentProps, RouteComponentProps, IDispatchProps {}
@@ -24,19 +28,11 @@ const RegistrationPage: React.FC<IProps> = (props) => {
         values: { username: string; email: string; password: string; confirmPassword: string }
       ) => {
         if (!err) {
-          console.log('Received values of form: ', values);
           if (values.password !== values.confirmPassword) {
-            toast("Passwords don't match", {
-              type: 'error',
-              position: 'bottom-center',
-              autoClose: 5000,
-              hideProgressBar: true,
-              closeOnClick: true
-            });
+            showNotification("Passwords don't match", 'error');
             return;
           }
           props.registration(values);
-          // props.history.push('/main');
         }
       }
     );
@@ -69,10 +65,8 @@ const RegistrationPage: React.FC<IProps> = (props) => {
             rules: [
               { required: true, message: 'Please input your email!' },
               {
-                pattern: new RegExp(
-                  /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
-                ),
-                message: 'Wrong email!'
+                pattern: emailRegExp,
+                message: 'Wrong email'
               }
             ]
           })(

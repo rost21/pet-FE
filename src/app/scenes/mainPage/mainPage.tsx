@@ -1,15 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Layout, Menu, Icon } from 'antd';
-import { StyledLayout } from './styled';
+import { StyledLayout, StyledHeader, StyledContent } from './styled';
 import { HeaderConnected as HeaderComponent } from './header/header';
 import { ContentRouter } from './mainContent/content';
-import { RouteComponentProps } from 'react-router';
-import ROUTES from '../../routes';
+import ROUTES from 'app/routes';
+import { getUser } from 'app/redux/auth/actions';
+import { IProps, IDispatchProps, IStateProps } from './types';
+import { IRootReducer } from 'app/redux/rootReducer';
 
-const { Header, Sider, Content } = Layout;
-
-interface IProps extends RouteComponentProps {}
+const { Sider } = Layout;
 
 const MainPage: React.FC<IProps> = (props) => {
   const [collapsed, setCollapsed] = React.useState(false);
@@ -18,11 +18,18 @@ const MainPage: React.FC<IProps> = (props) => {
     setCollapsed(!collapsed);
   };
 
+  React.useEffect(() => {
+    const token = localStorage.getItem('token');
+    props.getUser(token!);
+    // component will unmount
+    return () => {};
+  }, []);
+
   const redirectTo = (path: string) => props.history.push(path);
 
   const selectedKey = props.location.pathname.split('/')[2];
 
-  return (
+  return props.isLoggedIn ? (
     <StyledLayout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo">Project</div>
@@ -42,56 +49,28 @@ const MainPage: React.FC<IProps> = (props) => {
         </Menu>
       </Sider>
       <Layout>
-        <Header
-          style={{
-            backgroundColor: '#fff',
-            padding: '0 20px',
-            lineHeight: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'center'
-          }}
-        >
+        <StyledHeader>
           <HeaderComponent
             replace={props.history.push}
             collapsed={collapsed}
             onCollapse={onCollapse}
           />
-        </Header>
-        <Content
-          style={{
-            margin: '24px 16px',
-            padding: 24,
-            background: '#fff',
-            minHeight: 280,
-            display: 'flex'
-          }}
-        >
+        </StyledHeader>
+        <StyledContent>
           <ContentRouter />
-        </Content>
+        </StyledContent>
       </Layout>
     </StyledLayout>
-  );
+  ) : null;
 };
 
 export const MainPageConnected = connect(
-  // (state) => {
-  //   const comeFrom =
-  //     get(
-  //       state.modals.openedModalWindows.find(
-  //         m => m.type === ModalTypes.MOBILE_FULL_SCREEN_VIEW_ACTIONS
-  //       ),
-  //       'extra.comeFrom'
-  //     ) || ''
-  //   return {
-  //     isAuthenticated: state.auth.isLoggedIn,
-  //     publicImage: isReportEnabled(state) ? state.search.selectedImageId : '',
-  //     comeFrom
-  //   }
-  // },
-  null,
-  // (dispatch) => ({
-  //   login: (value: string) => dispatch(actions.setText(value))
-  // })
-  null
+  (state: IRootReducer): IStateProps => {
+    return {
+      isLoggedIn: state.auth.isLoggedIn
+    };
+  },
+  (dispatch): IDispatchProps => ({
+    getUser: (token: string) => dispatch(getUser.started({ token }))
+  })
 )(MainPage);
