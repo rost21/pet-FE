@@ -1,26 +1,28 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Layout, Menu, Icon } from 'antd';
 import { StyledLayout, StyledHeader, StyledContent } from './styled';
 import { HeaderConnected as HeaderComponent } from './header/header';
 import { ContentRouter } from './mainContent/content';
 import ROUTES from 'app/routes';
 import { getUser } from 'app/redux/auth/actions';
-import { IProps, IDispatchProps, IStateProps } from './types';
-import { IRootReducer } from 'app/redux/rootReducer';
+import { IProps } from './types';
+import { isLoggedIn as isLoggedInSelector } from 'app/redux/auth/selectors';
 
 const { Sider } = Layout;
 
-const MainPage: React.FC<IProps> = (props) => {
+export const MainPage: React.FC<IProps> = (props) => {
   const [collapsed, setCollapsed] = React.useState(false);
-
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector(isLoggedInSelector)
+  
   const onCollapse = () => {
     setCollapsed(!collapsed);
   };
 
   React.useEffect(() => {
     const token = localStorage.getItem('token');
-    props.getUser(token!);
+    dispatch(getUser.started({ token: token! }));
     // component will unmount
     return () => {};
   }, []);
@@ -29,7 +31,7 @@ const MainPage: React.FC<IProps> = (props) => {
 
   const selectedKey = props.location.pathname.split('/')[2];
 
-  return props.isLoggedIn ? (
+  return isLoggedIn ? (
     <StyledLayout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo">Project</div>
@@ -64,13 +66,3 @@ const MainPage: React.FC<IProps> = (props) => {
   ) : null;
 };
 
-export const MainPageConnected = connect(
-  (state: IRootReducer): IStateProps => {
-    return {
-      isLoggedIn: state.auth.isLoggedIn
-    };
-  },
-  (dispatch): IDispatchProps => ({
-    getUser: (token: string) => dispatch(getUser.started({ token }))
-  })
-)(MainPage);

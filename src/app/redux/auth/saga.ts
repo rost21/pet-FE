@@ -46,6 +46,7 @@ function* login(action: ReturnType<typeof actions.login.started>) {
 }
 
 function* logout() {
+  localStorage.removeItem('token')
   yield history.push(ROUTES.LOGIN);
 }
 
@@ -68,6 +69,6 @@ function* getUser(action: ReturnType<typeof actions.getUser.started>) {
 export function* saga() {
   yield takeLatest(actions.registration.started, registration);
   yield takeEvery(actions.login.started, login);
-  yield takeEvery(actions.logout, logout);
+  yield takeLatest(actions.logout, logout);
   yield takeLatest(actions.getUser.started, getUser);
 }
