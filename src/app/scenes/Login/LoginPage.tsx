@@ -5,7 +5,7 @@ import { LoginFormContainer, LoginForm, LoginFormTitle } from './styled';
 import { FormComponentProps } from 'antd/lib/form';
 import { RouteComponentProps } from 'react-router';
 import ROUTES from '../../routes';
-import { ILoginUserVariables } from '../../redux/types';
+import { ILoginUserVariables } from '../../types';
 import * as actions from '../../redux/auth/actions';
 
 interface IDispatchProps {

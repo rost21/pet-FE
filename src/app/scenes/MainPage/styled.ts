@@ -5,6 +5,7 @@ const { Header, Content } = Layout;
 
 export const StyledLayout = styled(Layout)`
   min-height: 100vh !important;
+  height: 100%;
 
   .icons-header {
     svg {
@@ -29,4 +30,13 @@ export const StyledContent = styled(Content)`
   background: #fff;
   min-height: 280px !important;
   display: flex;
+
+  & .ant-spin-container {
+    height: 100%;
+  }
+
+  & .ant-spin-nested-loading {
+    height: 100%;
+    width: 100%;
+  }
 `;

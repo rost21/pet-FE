@@ -1,12 +1,13 @@
 import * as React from 'react';
+import { useDispatch } from 'react-redux';
 import { Icon, Popover } from 'antd';
-import { connect } from 'react-redux';
 import { PopoverRow, HeaderContainer } from './styled';
 import ROUTES from '../../../routes';
 import { IProps } from './types';
 import { logout } from '../../../redux/auth/actions';
 
-const Header: React.FC<IProps> = (props) => {
+export const Header: React.FC<IProps> = (props) => {
+  const dispatch = useDispatch();
   const popoverContent = (
     <>
       <PopoverRow onClick={() => props.replace(ROUTES.MAIN)}>
@@ -19,7 +20,7 @@ const Header: React.FC<IProps> = (props) => {
         My Profile
       </PopoverRow>
 
-      <PopoverRow onClick={props.logout}>
+      <PopoverRow onClick={() => dispatch(logout())}>
         <Icon type="unlock" theme="filled" style={{ paddingRight: 10 }} />
         Logout
       </PopoverRow>
@@ -41,7 +42,6 @@ const Header: React.FC<IProps> = (props) => {
           placement="bottomRight"
           content={popoverContent}
           trigger="click"
-          className="popopopo"
         >
           <Icon className="icons-header" type="user" />
         </Popover>
@@ -49,10 +49,3 @@ const Header: React.FC<IProps> = (props) => {
     </HeaderContainer>
   );
 };
-
-export const HeaderConnected = connect(
-  null,
-  (dispatch) => ({
-    logout: () => dispatch(logout())
-  })
-)(Header);

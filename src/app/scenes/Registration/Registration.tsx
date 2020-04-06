@@ -6,7 +6,7 @@ import { LoginFormContainer, LoginForm, LoginFormTitle } from './styled';
 import { FormComponentProps } from 'antd/lib/form';
 import { RouteComponentProps } from 'react-router';
 import ROUTES from 'app/routes';
-import { IRegisterUserVariables } from '../../redux/types';
+import { IRegisterUserVariables } from '../../types';
 import { showNotification } from 'app/utils/notifications';
 
 const emailRegExp = new RegExp(

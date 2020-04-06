@@ -1,47 +1,62 @@
-import { takeLatest, call, takeEvery, put } from 'redux-saga/effects';
+import { takeLatest, call, put } from 'redux-saga/effects';
 import * as actions from './actions';
-import * as api from './api';
-import { IRegisterUserResponse } from 'app/redux/types';
+import { login as loginApi, getUser as getUserApi } from '../../graphql/user';
+import { ILoginUserResponse, IUser } from '../../types';
 import { history } from '../../../main';
 import ROUTES from '../../routes';
 import { showNotification } from 'app/utils/notifications';
 
 function* registration(action: ReturnType<typeof actions.registration.started>) {
-  const response: IRegisterUserResponse = yield call(api.registration, action.payload);
+  try {
+    // const response: IRegisterUserResponse = yield call(api.registration, action.payload);
 
-  if (response.error) {
-    if (!response.error.errors) {
-      showNotification(response.error, 'error')
-      return;
-    }
+    // if (response.error) {
+    //   if (!response.error.errors) {
+    //     showNotification(response.error, 'error')
+    //     return;
+    //   }
 
-    const errors = response.error.errors;
-    Object.keys(errors).map((key) => showNotification(errors[key].message, 'error'));
-    return;
+    //   const errors = response.error.errors;
+    //   Object.keys(errors).map((key) => showNotification(errors[key].message, 'error'));
+    //   return;
+    // }
+
+    showNotification('Successful registration', 'success');
+    yield history.push(ROUTES.LOGIN);
+  } catch (e) {
+    console.error(e)
   }
-
-  showNotification('Successful registration', 'success');
-  history.push(ROUTES.LOGIN);
 }
 
 function* login(action: ReturnType<typeof actions.login.started>) {
-  const response = yield call(api.login, action.payload);
+  try {
+    const payload = action.payload;
+    const { data: { login: response } }: { data: { login: ILoginUserResponse } } = yield call(loginApi, payload);
 
-  if (response.error) {
-    yield put(actions.login.failed(response.error));
-    showNotification(response.error, 'error');
-    return;
-  }
-
-  if (response.isLoggedIn) {
-    const { id, username, email, token } = response
-    yield put(actions.setUser({ 
-      id,
-      username,
-      email,
+    if (!response.isLoggedIn) {
+      yield put(actions.login.failed({
+        params: action.payload,
+        error: 'Failed login'
+      }));
+      showNotification('Failed login', 'error');
+      return;
+    }
+  
+    if (response.isLoggedIn) {
+      const { token } = response
+      yield put(actions.login.done({ 
+        params: action.payload,
+        result: response,
+      }));
+      localStorage.setItem('token', token);
+      history.push(ROUTES.MAIN);
+    }
+  } catch (e) {
+    console.error(e);
+    yield put(actions.login.failed({
+      params: action.payload,
+      error: e,
     }));
-    localStorage.setItem('token', token);
-    history.push(ROUTES.MAIN);
   }
 }
 
@@ -51,24 +66,36 @@ function* logout() {
 }
 
 function* getUser(action: ReturnType<typeof actions.getUser.started>) {
-  const response = yield call(api.getUser, action.payload);
-  if (response.error) {
-    yield put(actions.login.failed(response.error));
-    showNotification(response.error, 'error');
-    return history.replace(ROUTES.LOGIN);
-  }
+  try {
+    const { token } = action.payload;
+    if (!token) {
+      showNotification('You are not authorized', 'error');
+      return history.replace(ROUTES.LOGIN);
+    }
+    const { data: { getUser: response} }: { data: { getUser: IUser } } = yield call(getUserApi, token);
+
+    // if (response.error) {
+    //   yield put(actions.login.failed(response.error));
+    //   showNotification(response.error, 'error');
+    //   return history.replace(ROUTES.LOGIN);
+    // }
   
-  const { id, username, email } = response.user
-  yield put(actions.setUser({ 
-    id,
-    username,
-    email,
-  }));
+    yield put(actions.getUser.done({ 
+      params: action.payload,
+      result: response,
+    }));
+  } catch (e) {
+    console.error(e)
+    yield put(actions.getUser.failed({
+      params: action.payload,
+      error: e,
+    }))
+  }
 }
 
 export function* saga() {
   yield takeLatest(actions.registration.started, registration);
-  yield takeEvery(actions.login.started, login);
+  yield takeLatest(actions.login.started, login);
   yield takeLatest(actions.logout, logout);
   yield takeLatest(actions.getUser.started, getUser);
 }

@@ -1,5 +1,12 @@
 import { actionCreatorFactory } from 'typescript-fsa';
-import { IRegisterUserVariables, IRegisterUserResponse, ILoginUserVariables, ILoginUserResponse, IGetUserVariables, IGetUserResponse } from 'app/redux/types';
+import {
+  IRegisterUserVariables,
+  IRegisterUserResponse,
+  ILoginUserVariables,
+  ILoginUserResponse,
+  IGetUserVariables,
+  IUser
+} from '../../types';
 
 const actionCreator = actionCreatorFactory('auth');
 
@@ -16,4 +23,4 @@ export const setUser = actionCreator<{ id: string, username: string, email: stri
 
 export const logout = actionCreator('LOGOUT');
 
-export const getUser = actionCreator.async<IGetUserVariables, IGetUserResponse, string>('GET_USER');
+export const getUser = actionCreator.async<IGetUserVariables, IUser, string>('GET_USER');

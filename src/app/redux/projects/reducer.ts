@@ -1,29 +1,70 @@
 import { reducerWithInitialState } from "typescript-fsa-reducers";
 import * as actions from './actions';
+import { IProjects, IProject } from "app/types";
 
-interface IReducerShape {
-  projects: [];
-  isLoadingProjects: boolean;
+export interface IReducerShape {
+  projects: IProjects;
+  isLoading: boolean;
+  project: IProject | null;
 }
 
 const initialState: IReducerShape = {
   projects: [],
-  isLoadingProjects: false,
+  isLoading: false,
+  project: null,
 };
 
 export const reducer = reducerWithInitialState(initialState)
   .case(
-    actions.createProject.started,
+    actions.getAllProjects.started,
     (state): IReducerShape => ({
       ...state,
-      isLoadingProjects: true,
+      isLoading: true,
+    })
+  )
+  .case(
+    actions.getAllProjects.done,
+    (state, payload): IReducerShape => ({
+      ...state,
+      isLoading: false,
+      projects: payload.result,
+    })
+  )
+  .case(
+    actions.setProjects,
+    (state, payload): IReducerShape => ({
+      ...state,
+      isLoading: false,
+      projects: payload,
+    })
+  )
+  .case(
+    actions.getSingleProject.started,
+    (state): IReducerShape => ({
+      ...state,
+      isLoading: true,
+    })
+  )
+  .case(
+    actions.getSingleProject.done,
+    (state, payload): IReducerShape => ({
+      ...state,
+      project: payload.result,
+      isLoading: false,
+    })
+  )
+  .case(
+    actions.closeProject.started,
+    (state): IReducerShape => ({
+      ...state,
+      isLoading: true,
     })
   )
   .case(
     actions.createProject.done,
     (state, payload): IReducerShape => ({
       ...state,
-      projects: (payload.result as []),
-      isLoadingProjects: false,
+      // projects: (payload.result as []),
+      // isLoadingProjects: false,
     })
   );

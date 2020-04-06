@@ -1,28 +1,33 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Layout, Menu, Icon } from 'antd';
+import { Layout, Menu, Icon, Spin } from 'antd';
 import { StyledLayout, StyledHeader, StyledContent } from './styled';
-import { HeaderConnected as HeaderComponent } from './header/header';
-import { ContentRouter } from './mainContent/content';
+import { Header } from './Header/Header';
+import { ContentRouter } from './MainContent/Content';
 import ROUTES from 'app/routes';
 import { getUser } from 'app/redux/auth/actions';
+import { getAllProjects } from 'app/redux/projects/actions';
 import { IProps } from './types';
-import { isLoggedIn as isLoggedInSelector } from 'app/redux/auth/selectors';
+import { IRootReducer } from 'app/redux/rootReducer';
 
 const { Sider } = Layout;
 
 export const MainPage: React.FC<IProps> = (props) => {
   const [collapsed, setCollapsed] = React.useState(false);
   const dispatch = useDispatch();
-  const isLoggedIn = useSelector(isLoggedInSelector)
+  const { isLoggedIn, isLoading: isLoadingUser } = useSelector((state: IRootReducer) => state.auth);
+  const { isLoading: isLoadingProjects } = useSelector((state: IRootReducer) => state.project);
+
+  const isFetching = isLoadingUser || isLoadingProjects;
   
-  const onCollapse = () => {
+  const onCollapse = React.useCallback(() => {
     setCollapsed(!collapsed);
-  };
+  }, [collapsed]);
 
   React.useEffect(() => {
     const token = localStorage.getItem('token');
     dispatch(getUser.started({ token: token! }));
+    dispatch(getAllProjects.started({}));
     // component will unmount
     return () => {};
   }, []);
@@ -50,16 +55,18 @@ export const MainPage: React.FC<IProps> = (props) => {
           </Menu.Item>
         </Menu>
       </Sider>
-      <Layout>
+      <Layout style={{ overflow: 'hidden' }}>
         <StyledHeader>
-          <HeaderComponent
+          <Header
             replace={props.history.push}
             collapsed={collapsed}
             onCollapse={onCollapse}
           />
         </StyledHeader>
         <StyledContent>
-          <ContentRouter />
+          <Spin spinning={isFetching}>
+            <ContentRouter />
+          </Spin>
         </StyledContent>
       </Layout>
     </StyledLayout>
