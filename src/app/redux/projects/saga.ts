@@ -54,7 +54,6 @@ function* closeProject(action: ReturnType<typeof actions.closeProject.started>) 
     const payload = { status: 'CLOSED', endDate: `${now}` };
 
     const { data: { updateProject: response } }: { data: { updateProject: UpdateProjectResponse } } = yield call(updateProject, id, payload)
-    console.log('response: ', response);
 
     if (!response.isUpdated) {
       return;

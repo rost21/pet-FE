@@ -22,7 +22,7 @@ interface IProps extends RouteComponentProps {}
 
 export const Projects: React.FC<IProps> = (props) => {
   // const dispatch = useDispatch();
-  const { projects } = useSelector((state: IRootReducer) => state.project);
+  const { allProjects: projects } = useSelector((state: IRootReducer) => state.project);
   const { user } = useSelector((state: IRootReducer) => state.auth);
   const [stateProjects, setProjects] = React.useState<IProjects>([]);
   const [search, setSearch] = React.useState('');

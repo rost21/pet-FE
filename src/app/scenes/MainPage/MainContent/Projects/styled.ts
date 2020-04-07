@@ -79,6 +79,15 @@ export const DescriptionBody = styled.span`
   text-overflow: ellipsis;
 `;
 
+export const User = styled.div`
+  display: flex;
+  align-items: center;
+  padding-top: 5px;
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
 export const UserAvatar = styled.div`
   height: 40px;
   width: 40px;

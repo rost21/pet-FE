@@ -1,6 +1,6 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import * as actions from './actions';
-import { login as loginApi, getUser as getUserApi } from '../../graphql/user';
+import { login as loginApi, getUser as getUserApi, getUsers } from '../../graphql/user';
 import { ILoginUserResponse, IUser } from '../../types';
 import { history } from '../../../main';
 import ROUTES from '../../routes';
@@ -72,7 +72,7 @@ function* getUser(action: ReturnType<typeof actions.getUser.started>) {
       showNotification('You are not authorized', 'error');
       return history.replace(ROUTES.LOGIN);
     }
-    const { data: { getUser: response} }: { data: { getUser: IUser } } = yield call(getUserApi, token);
+    const { data: { getUser: response } }: { data: { getUser: IUser } } = yield call(getUserApi, token);
 
     // if (response.error) {
     //   yield put(actions.login.failed(response.error));
@@ -93,9 +93,31 @@ function* getUser(action: ReturnType<typeof actions.getUser.started>) {
   }
 }
 
+function* getAllUsers() {
+  try {
+    const { data: { users: response } } = yield call(getUsers);
+
+    if (!response) {
+      return;
+    }
+
+    yield put(actions.getAllUsers.done({
+      params: {},
+      result: response,
+    }))
+  } catch (e) {
+    console.log(e);
+    yield put(actions.getAllUsers.failed({
+      params: {},
+      error: e,
+    }))
+  }
+}
+
 export function* saga() {
   yield takeLatest(actions.registration.started, registration);
   yield takeLatest(actions.login.started, login);
   yield takeLatest(actions.logout, logout);
   yield takeLatest(actions.getUser.started, getUser);
+  yield takeLatest(actions.getAllUsers.started, getAllUsers);
 }

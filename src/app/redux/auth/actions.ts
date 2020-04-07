@@ -5,7 +5,8 @@ import {
   ILoginUserVariables,
   ILoginUserResponse,
   IGetUserVariables,
-  IUser
+  IUser,
+  IUsers
 } from '../../types';
 
 const actionCreator = actionCreatorFactory('auth');
@@ -24,3 +25,5 @@ export const setUser = actionCreator<{ id: string, username: string, email: stri
 export const logout = actionCreator('LOGOUT');
 
 export const getUser = actionCreator.async<IGetUserVariables, IUser, string>('GET_USER');
+
+export const getAllUsers = actionCreator.async<{}, IUsers, string>('GET_ALL_USERS');

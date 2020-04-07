@@ -3,13 +3,13 @@ import * as actions from './actions';
 import { IProjects, IProject } from "app/types";
 
 export interface IReducerShape {
-  projects: IProjects;
+  allProjects: IProjects;
   isLoading: boolean;
   project: IProject | null;
 }
 
 const initialState: IReducerShape = {
-  projects: [],
+  allProjects: [],
   isLoading: false,
   project: null,
 };
@@ -27,7 +27,7 @@ export const reducer = reducerWithInitialState(initialState)
     (state, payload): IReducerShape => ({
       ...state,
       isLoading: false,
-      projects: payload.result,
+      allProjects: payload.result,
     })
   )
   .case(
@@ -35,7 +35,7 @@ export const reducer = reducerWithInitialState(initialState)
     (state, payload): IReducerShape => ({
       ...state,
       isLoading: false,
-      projects: payload,
+      allProjects: payload,
     })
   )
   .case(

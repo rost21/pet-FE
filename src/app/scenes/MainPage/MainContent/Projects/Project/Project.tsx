@@ -1,13 +1,14 @@
 import * as React from 'react';
-// import * as dayjs from 'dayjs';
+import * as dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { RouteComponentProps } from 'react-router';
 import { getSingleProject, closeProject } from 'app/redux/projects/actions';
 import { IRootReducer } from 'app/redux/rootReducer';
-import { Spin, Button, Modal } from 'antd';
+import { Spin, Button, Modal, Drawer, Select } from 'antd';
 import * as s from '../styled';
 import ROUTES from 'app/routes';
 import { IUsers } from 'app/types';
+import { getAllUsers } from 'app/redux/auth/actions';
 
 interface IProps extends RouteComponentProps<{ id: string}> {
 
@@ -16,12 +17,22 @@ interface IProps extends RouteComponentProps<{ id: string}> {
 export const Project: React.FC<IProps> = (props) => {
   const dispatch = useDispatch();
   const { id } = props.match.params;
+
   const { project, isLoading } = useSelector((state: IRootReducer) => state.project);
+  const { allUsers: users } = useSelector((state: IRootReducer) => state.auth);
+
+  const [drawerVisible, setDrawerVisible] = React.useState(false);
+  const [stepsVisible, setStepsVisible] = React.useState(false);
+  const [allUsers, setAllUsers] = React.useState<IUsers>([]);
+  // console.log('setAllUsers: ', setAllUsers);
+  console.log('allUsers: ', allUsers);
+  // const [tasks, setTasks] = React.useState([]);
   // console.log('project: ', project);
 
   React.useEffect(
     () => {
-      dispatch(getSingleProject.started(id))
+      dispatch(getSingleProject.started(id));
+      dispatch(getAllUsers.started({}));
       // component will unmount
       return () => {
         dispatch(getSingleProject.done({
@@ -32,6 +43,11 @@ export const Project: React.FC<IProps> = (props) => {
     },
     [id]
   );
+
+  React.useEffect(() => {
+    setAllUsers(users!);
+    return () => {}
+  }, [users])
 
   const renderStatus = (status: string) => {
     switch (status) {
@@ -59,16 +75,28 @@ export const Project: React.FC<IProps> = (props) => {
     });
   }
 
-  const renderMember = (members: IUsers) => {
+  const renderSteps = (id: string) => {
+    console.log('id: ', id);
+    const { tasks } = project!;
+    console.log('tasks: ', tasks);
+    const steps = tasks.filter(task => task && task.assignTo && task.assignTo.id === id);
+    console.log('steps: ', steps);
+    setStepsVisible(true)
+  }
+
+  const renderMembers = (members: IUsers) => {
+    if (!members.length) {
+      return <div>You don't have team members in this projects yet</div>
+    }
     return members && members.map(member => {
-      const { firstname, lastname, username, rankings } = member;
-      const t = (firstname && lastname) ? `${firstname[0].toUpperCase()} ${lastname[0].toUpperCase()}` : username[0].toUpperCase();
-      console.log('t: ', t);
+      const { firstname = '', lastname = '', username = '', rankings } = member;
+      const user = (firstname && lastname) ? `${firstname[0].toUpperCase()}${lastname[0].toUpperCase()}` : username[0].toUpperCase();
+      // console.log('t: ', t);
       return (
-        <div style={{ display: 'flex', alignItems: 'center', paddingTop: 5 }}>
-          <s.UserAvatar>{t}</s.UserAvatar>
-          <h3 style={{ marginLeft: 10 }}>{`${firstname} ${lastname} ${rankings}`}</h3>
-        </div>
+        <s.User key={member.id} onClick={() => renderSteps(member.id)}>
+          <s.UserAvatar>{user}</s.UserAvatar>
+          <h3 style={{ marginLeft: 10 }}>{`${firstname || ''} ${lastname || ''} ${username || ''}${rankings || ''}`}</h3>
+        </s.User>
       )
     })
   }
@@ -97,22 +125,49 @@ export const Project: React.FC<IProps> = (props) => {
             </s.ProjectHeader>
             <s.ProjectBody>
                 <s.ProjectDescription>
+                  <div style={{ display: 'flex', alignItems: 'baseline' }}>
+                    <h3>Created by  {project.owner.username} {dayjs(+project.startDate).format('DD MMM YYYY')}
+                    {project.endDate && `. Closed ${dayjs(+project.endDate).format('DD MMM YYYY')}`} </h3>
+                  </div>
                   <s.Title>Description</s.Title>
                   <s.DescriptionBody title={project.shortDescription}>
                     {project.shortDescription}
                   </s.DescriptionBody>
                 </s.ProjectDescription>
                 <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 20 }}>
-                  <div style={{ width: '50%', border: '1px solid' }}>
+                  <div style={{ width: '35%' }}>
                     <s.Title>Team members:</s.Title>
-                    {/* {`${project.owner.firstname} ${project.owner.lastname}`} Owner */}
-                    {renderMember(project.members)}
+                    {renderMembers(project.members)}
+                    <div style={{ display: 'flex', justifyContent: 'center' }} onClick={() => setDrawerVisible(true)}>
+                      <Button>Add member</Button>
+                    </div>
                   </div>
-                  <div style={{ width: '50%', border: '1px solid' }}>
+                  {stepsVisible && <div style={{ width: '65%' }}>
                     <s.Title>Steps</s.Title>
-                  </div>
+                  </div> }
+                  
                 </div>
             </s.ProjectBody>
+            <Drawer
+              title="Title"
+              width="35%"
+              placement="right"
+              visible={drawerVisible}
+              destroyOnClose
+              onClose={() => setDrawerVisible(false)}
+            >
+              <Spin spinning={!allUsers.length}>
+              <Select
+                mode="multiple"
+                style={{ width: '100%' }}
+                placeholder="Please select"
+                // defaultValue={['a10', 'c12']}
+                // onChange={handleChange}
+                // options={allUsers}
+              />
+              </Spin>
+              
+            </Drawer>
           </s.ProjectContainer>
         ) : (
           <s.ProjectContainer>
