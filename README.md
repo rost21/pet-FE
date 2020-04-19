@@ -1,4 +1,4 @@
-# Frontend part of dimplom work
+# Frontend part of diploma work
 
 Based on react-redux-webpack-typescript boilerplate
 

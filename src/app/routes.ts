@@ -4,6 +4,7 @@ export default {
   REGISTRATION: '/registration',
   MAIN: '/main',
   PROJECTS: '/main/projects',
+  PROJECT: '/main/projects/:id',
   PROFILE: '/main/profile',
   ANY: '*'
 };
