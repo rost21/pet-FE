@@ -15,8 +15,22 @@ const initialState: IReducerShape = {
 };
 
 export const reducer = reducerWithInitialState(initialState)
+  .cases(
+    [
+      actions.getAllProjects.started,
+      actions.getSingleProject.started,
+      actions.closeProject.started,
+      actions.changeProjectTitle.started,
+      actions.changeProjectDescription.started,
+      actions.deleteUserFromMembers.started
+    ],
+    (state): IReducerShape => ({
+      ...state,
+      isLoading: true,
+    })
+  )
   .case(
-    actions.getAllProjects.started,
+    actions.addMembersToProject.started,
     (state): IReducerShape => ({
       ...state,
       isLoading: true,
@@ -39,25 +53,11 @@ export const reducer = reducerWithInitialState(initialState)
     })
   )
   .case(
-    actions.getSingleProject.started,
-    (state): IReducerShape => ({
-      ...state,
-      isLoading: true,
-    })
-  )
-  .case(
     actions.getSingleProject.done,
     (state, payload): IReducerShape => ({
       ...state,
       project: payload.result,
       isLoading: false,
-    })
-  )
-  .case(
-    actions.closeProject.started,
-    (state): IReducerShape => ({
-      ...state,
-      isLoading: true,
     })
   )
   .case(

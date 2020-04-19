@@ -26,8 +26,8 @@ export const ProjectsContainer = styled.div`
 
 export const ProjectStyled = styled(Card)`
   width: 300px;
-  height: 150px;
-  margin: 10px 10px 10px 0 !important;
+  height: 160px;
+  margin: 10px 10px 0 0 !important;
 `;
 
 export const ProjectsHeader = styled.div`

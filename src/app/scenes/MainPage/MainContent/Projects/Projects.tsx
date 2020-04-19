@@ -113,7 +113,7 @@ export const Projects: React.FC<IProps> = (props) => {
         <div>
           <Title>Projects</Title>
         </div>
-        <div>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <Select size="large" value={typeOfProjects} onChange={handleChangeView} style={{ width: 160, marginRight: 16 }}>
             <Select.Option value="all">All projects</Select.Option>
             <Select.Option value="my">My projects</Select.Option>

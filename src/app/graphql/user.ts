@@ -24,6 +24,7 @@ const GET_USER = gql`
       isCustomer
       skills
       rankings
+      about
     }
   }
 `;
@@ -50,6 +51,7 @@ const GET_USERS = gql`
       isCustomer
       skills
       rankings
+      about
     }
   }
 `;

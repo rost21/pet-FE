@@ -1,4 +1,4 @@
-import { IProjects, IUser } from "app/types";
+import { IProjects, IUser, IProject } from "app/types";
 
 export const findProjects = (projects: IProjects, searchValue: string) => {
   return projects.filter((project) => project.title.includes(searchValue))
@@ -14,4 +14,8 @@ export const changeViewProjects = (projects: IProjects, type: string, user: IUse
   }
   // const t = projects.filter(project => project.members.includes(user));
   return projects;
+}
+
+export const isUserOwnerProject = (user: IUser, project: IProject) => {
+  return user.id === project.owner.id;
 }

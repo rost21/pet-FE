@@ -6,7 +6,7 @@ const GET_PROJECTS = gql`
     projects {
       id
       title
-      shortDescription
+      description
       owner {
         id
         firstname
@@ -19,6 +19,7 @@ const GET_PROJECTS = gql`
         isCustomer
         skills
         rankings
+        about
       }
       status
       members {
@@ -33,6 +34,7 @@ const GET_PROJECTS = gql`
         isCustomer
         skills
         rankings
+        about
       }
       tasks {
         id
@@ -51,6 +53,7 @@ const GET_PROJECTS = gql`
           isCustomer
           skills
           rankings
+          about
         }
         assignTo {
           id
@@ -64,6 +67,7 @@ const GET_PROJECTS = gql`
           isCustomer
           skills
           rankings
+          about
         }
         status
       }
@@ -78,7 +82,7 @@ const GET_PROJECT = gql`
     getProject (id: $id) {
       id
       title
-      shortDescription
+      description
       owner {
         id
         firstname
@@ -91,6 +95,7 @@ const GET_PROJECT = gql`
         isCustomer
         skills
         rankings
+        about
       }
       status
       members {
@@ -105,6 +110,7 @@ const GET_PROJECT = gql`
         isCustomer
         skills
         rankings
+        about
       }
       tasks {
         id
@@ -123,6 +129,7 @@ const GET_PROJECT = gql`
           isCustomer
           skills
           rankings
+          about
         }
         assignTo {
           id
@@ -136,6 +143,7 @@ const GET_PROJECT = gql`
           isCustomer
           skills
           rankings
+          about
         }
         status
       }
@@ -151,7 +159,7 @@ const UPDATE_PROJECT = gql`
       project {
         id
         title
-        shortDescription
+        description
         owner {
           id
           firstname
@@ -164,6 +172,7 @@ const UPDATE_PROJECT = gql`
           isCustomer
           skills
           rankings
+          about
         }
         status
         members {
@@ -178,6 +187,7 @@ const UPDATE_PROJECT = gql`
           isCustomer
           skills
           rankings
+          about
         }
         tasks {
           id
@@ -196,6 +206,7 @@ const UPDATE_PROJECT = gql`
             isCustomer
             skills
             rankings
+            about
           }
           assignTo {
             id
@@ -209,6 +220,7 @@ const UPDATE_PROJECT = gql`
             isCustomer
             skills
             rankings
+            about
           }
           status
         }

@@ -44,8 +44,9 @@ export interface IUser {
   dateOfBirth: string;
   role: string;
   isCustomer: boolean;
-  skills: string;
+  skills: string[];
   rankings: number;
+  about: string;
 }
 
 export type IUsers = IUser[]
@@ -65,7 +66,7 @@ export type ITasks = ITask[]
 export interface IProject {
   id: string;
   title: string;
-  shortDescription: string;
+  description: string;
   owner: IUser;
   status: string;
   members: IUser[];

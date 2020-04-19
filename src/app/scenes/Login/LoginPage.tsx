@@ -1,8 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { Form, Icon, Input, Button } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Input, Button } from 'antd';
 import { LoginFormContainer, LoginForm, LoginFormTitle } from './styled';
-import { FormComponentProps } from 'antd/lib/form';
+import { FormComponentProps } from '@ant-design/compatible/lib/form';
 import { RouteComponentProps } from 'react-router';
 import ROUTES from '../../routes';
 import { ILoginUserVariables } from '../../types';
@@ -31,7 +34,7 @@ const LoginPage: React.FC<IProps> = (props) => {
     <LoginFormContainer>
       <LoginForm onSubmit={handleSubmit}>
         <LoginFormTitle>
-          <Icon type="lock" /> Username
+          <LockOutlined /> Username
         </LoginFormTitle>
         <Form.Item>
           {getFieldDecorator('username', {
@@ -42,7 +45,7 @@ const LoginPage: React.FC<IProps> = (props) => {
             ]
           })(
             <Input
-              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
               placeholder="Username"
             />
           )}
@@ -56,7 +59,7 @@ const LoginPage: React.FC<IProps> = (props) => {
             ]
           })(
             <Input
-              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
               type="password"
               placeholder="Password"
             />

@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import Form from 'antd/lib/form';
+import { Form } from '@ant-design/compatible';
 
 export const LoginFormContainer = styled.div`
   display: flex;

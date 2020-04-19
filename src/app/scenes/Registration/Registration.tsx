@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as actions from '../../redux/auth/actions';
-import { Input, Button, Form, Icon } from 'antd';
+import { LockOutlined, UserOutlined } from '@ant-design/icons';
+import { Form } from '@ant-design/compatible';
+import '@ant-design/compatible/assets/index.css';
+import { Input, Button } from 'antd';
 import { LoginFormContainer, LoginForm, LoginFormTitle } from './styled';
-import { FormComponentProps } from 'antd/lib/form';
+import { FormComponentProps } from '@ant-design/compatible/lib/form';
 import { RouteComponentProps } from 'react-router';
 import ROUTES from 'app/routes';
 import { IRegisterUserVariables } from '../../types';
@@ -43,7 +46,7 @@ const RegistrationPage: React.FC<IProps> = (props) => {
     <LoginFormContainer>
       <LoginForm onSubmit={handleSubmit}>
         <LoginFormTitle>
-          <Icon type="lock" /> Registration
+          <LockOutlined /> Registration
         </LoginFormTitle>
         <Form.Item>
           {getFieldDecorator('username', {
@@ -54,7 +57,7 @@ const RegistrationPage: React.FC<IProps> = (props) => {
             ]
           })(
             <Input
-              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
               placeholder="Username"
             />
           )}
@@ -71,7 +74,7 @@ const RegistrationPage: React.FC<IProps> = (props) => {
             ]
           })(
             <Input
-              prefix={<Icon type="user" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
               placeholder="Email"
             />
           )}
@@ -85,7 +88,7 @@ const RegistrationPage: React.FC<IProps> = (props) => {
             ]
           })(
             <Input
-              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
               type="password"
               placeholder="Password"
             />
@@ -100,7 +103,7 @@ const RegistrationPage: React.FC<IProps> = (props) => {
             ]
           })(
             <Input
-              prefix={<Icon type="lock" style={{ color: 'rgba(0,0,0,.25)' }} />}
+              prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
               type="password"
               placeholder="Confirm password"
             />

@@ -73,12 +73,6 @@ function* getUser(action: ReturnType<typeof actions.getUser.started>) {
       return history.replace(ROUTES.LOGIN);
     }
     const { data: { getUser: response } }: { data: { getUser: IUser } } = yield call(getUserApi, token);
-
-    // if (response.error) {
-    //   yield put(actions.login.failed(response.error));
-    //   showNotification(response.error, 'error');
-    //   return history.replace(ROUTES.LOGIN);
-    // }
   
     yield put(actions.getUser.done({ 
       params: action.payload,

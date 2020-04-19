@@ -11,7 +11,7 @@ interface IProps {
 export const ProjectComponent: React.FC<IProps> = ({ project, redirectTo }) => {
   return (
     <ProjectStyled bordered title={project.title} hoverable onClick={() => redirectTo(`/main/projects/${project.id}`)}>
-      <div>{project.shortDescription || 'description'} </div>
+      <div>{project.description || 'description'} </div>
       Owner: {project.owner.username} <br/>
       Members: {project.members && project.members.map((member) => <span key={member.id}>{member.username} </span>)}
     </ProjectStyled>

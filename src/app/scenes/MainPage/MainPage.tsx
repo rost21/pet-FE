@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Layout, Menu, Icon, Spin } from 'antd';
+import { AppstoreOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
+import { Layout, Menu, Spin } from 'antd';
 import { StyledLayout, StyledHeader, StyledContent } from './styled';
 import { Header } from './Header/Header';
 import { ContentRouter } from './MainContent/Content';
@@ -27,7 +28,7 @@ export const MainPage: React.FC<IProps> = (props) => {
   React.useEffect(() => {
     const token = localStorage.getItem('token');
     dispatch(getUser.started({ token: token! }));
-    dispatch(getAllProjects.started({}));
+    dispatch(getAllProjects.started(''));
     // component will unmount
     return () => {};
   }, []);
@@ -42,15 +43,15 @@ export const MainPage: React.FC<IProps> = (props) => {
         <div className="logo">Project</div>
         <Menu theme="dark" mode="inline" selectedKeys={[selectedKey || 'main']}>
           <Menu.Item key="main" onClick={() => redirectTo(ROUTES.MAIN)}>
-            <Icon type="home" />
+            <HomeOutlined />
             <span>Dashboard</span>
           </Menu.Item>
           <Menu.Item key="projects" onClick={() => redirectTo(ROUTES.PROJECTS)}>
-            <Icon type="appstore" />
+            <AppstoreOutlined />
             <span>Projects</span>
           </Menu.Item>
           <Menu.Item key="profile" onClick={() => redirectTo(ROUTES.PROFILE)}>
-            <Icon type="user" />
+            <UserOutlined />
             <span>Profile</span>
           </Menu.Item>
         </Menu>
