@@ -6,7 +6,7 @@ export const LoginFormContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100%;
+  flex-direction: column;
 
   .login-form-forgot {
     float: right;
@@ -24,4 +24,10 @@ export const LoginFormTitle = styled.div`
 
 export const LoginForm = styled(Form)`
   max-width: 300px;
+`;
+
+export const FormItem = styled(Form.Item)`
+  & > .ant-col {
+    width: 100%;
+  }
 `;

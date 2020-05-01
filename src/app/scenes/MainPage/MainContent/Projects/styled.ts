@@ -97,4 +97,4 @@ export const UserAvatar = styled.div`
   border-radius: 50%;
   background: lightgray;
   font-size: 25px;
-`
+`;
