@@ -13,13 +13,13 @@ function* getAllProjects() {
     yield put(actions.getAllProjects.done({
       params: '',
       result: response,
-    }))
+    }));
   } catch (e) {
     console.log(e);
     yield put(actions.getAllProjects.failed({
       params: '',
       error: e,
-    }))
+    }));
   }
 }
 
@@ -35,13 +35,13 @@ function* getSingleProject(action: ReturnType<typeof actions.getSingleProject.st
     yield put(actions.getSingleProject.done({
       params: id,
       result: response,
-    }))
+    }));
   } catch (e) {
     console.log(e);
     yield put(actions.getSingleProject.failed({
       params: action.payload,
       error: e,
-    }))
+    }));
   }
 }
 
@@ -50,10 +50,10 @@ function* closeProject(action: ReturnType<typeof actions.closeProject.started>) 
     const project: IProject = yield select((state: IRootReducer) => state.project.project);
     const id = action.payload;
 
-    const now = dayjs.extend(utc).utc().valueOf()
+    const now = dayjs.extend(utc).utc().valueOf();
     const payload = { status: 'CLOSED', endDate: `${now}` };
 
-    const { data: { updateProject: response } }: { data: { updateProject: UpdateProjectResponse } } = yield call(updateProject, id, payload)
+    const { data: { updateProject: response } }: { data: { updateProject: UpdateProjectResponse } } = yield call(updateProject, id, payload);
 
     if (!response.isUpdated) {
       return;
@@ -68,13 +68,13 @@ function* closeProject(action: ReturnType<typeof actions.closeProject.started>) 
     yield put(actions.getSingleProject.done({
       params: id,
       result: updatedProject,
-    }))
+    }));
   } catch (e) {
     console.log(e);
     yield put(actions.closeProject.failed({
       params: action.payload,
       error:e
-    }))
+    }));
   }
 }
 
@@ -95,13 +95,13 @@ function* addMembersToProject(action: ReturnType<typeof actions.addMembersToProj
     yield put(actions.getSingleProject.done({
       params: project.id,
       result: response.project,
-    }))
+    }));
   } catch (e) {
     console.log(e);
     yield put(actions.addMembersToProject.failed({
       params: action.payload,
       error: e,
-    }))
+    }));
   }
 }
 
@@ -120,18 +120,18 @@ function* changeProjectTitle(action: ReturnType<typeof actions.changeProjectTitl
     const updatedProject = {
       ...project,
       title: changedTitle,
-    }
+    };
 
     yield put(actions.getSingleProject.done({
       params: project.id,
       result: updatedProject,
-    }))
+    }));
   } catch (e) {
     console.log(e);
     yield put(actions.changeProjectTitle.failed({
       params: action.payload,
       error: e,
-    }))
+    }));
   }
 }
 
@@ -150,18 +150,18 @@ function* changeProjectDescription(action: ReturnType<typeof actions.changeProje
     const updatedProject = {
       ...project,
       description: changedDescription,
-    }
+    };
 
     yield put(actions.getSingleProject.done({
       params: project.id,
       result: updatedProject,
-    }))
+    }));
   } catch (e) {
     console.log(e);
     yield put(actions.changeProjectTitle.failed({
       params: action.payload,
       error: e,
-    }))
+    }));
   }
 }
 

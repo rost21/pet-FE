@@ -51,7 +51,7 @@ export const Projects: React.FC<IProps> = (props) => {
 
         let newList = [];
   
-        if (searchValue !== "") {
+        if (searchValue !== '') {
 
           currentList = projects;
   
@@ -64,19 +64,19 @@ export const Projects: React.FC<IProps> = (props) => {
             if (type === 'my') {
               return members.some(member => member.id === user!.id && title.includes(filter));
             } else {
-              return title.includes(filter)
+              return title.includes(filter);
             }
           });
         } else {
           if (type === 'my') {
             currentList = projects;
-            newList = currentList.filter(item => item.members.some(member => member.id === user!.id))
+            newList = currentList.filter(item => item.members.some(member => member.id === user!.id));
           } else {
             newList = projects;
           }
         }
-        setIsLoading(false)
-        setProjects(newList)
+        setIsLoading(false);
+        setProjects(newList);
       }, 1500);
     }, 1000);
   };
@@ -104,8 +104,8 @@ export const Projects: React.FC<IProps> = (props) => {
       newList = currentList.filter(item => item.title.toLowerCase().includes(searchValue));
     }
     
-    setProjects(newList)
-  }
+    setProjects(newList);
+  };
 
   return (
     <Container>
@@ -130,7 +130,7 @@ export const Projects: React.FC<IProps> = (props) => {
       </ProjectsHeader>
       <Spin spinning={isLoading}>
         <ProjectsContainer>
-          {!!stateProjects.length ?
+          {stateProjects.length ?
             stateProjects.map((project) => <ProjectComponent key={project.id} project={project} redirectTo={props.history.push} />) :
             <div
               style={{

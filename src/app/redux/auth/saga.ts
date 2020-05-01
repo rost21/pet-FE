@@ -24,7 +24,7 @@ function* registration(action: ReturnType<typeof actions.registration.started>) 
     showNotification('Successful registration', 'success');
     yield history.push(ROUTES.LOGIN);
   } catch (e) {
-    console.error(e)
+    console.error(e);
   }
 }
 
@@ -43,7 +43,7 @@ function* login(action: ReturnType<typeof actions.login.started>) {
     }
   
     if (response.isLoggedIn) {
-      const { token } = response
+      const { token } = response;
       yield put(actions.login.done({ 
         params: action.payload,
         result: response,
@@ -61,7 +61,7 @@ function* login(action: ReturnType<typeof actions.login.started>) {
 }
 
 function* logout() {
-  localStorage.removeItem('token')
+  localStorage.removeItem('token');
   yield history.push(ROUTES.LOGIN);
 }
 
@@ -79,11 +79,11 @@ function* getUser(action: ReturnType<typeof actions.getUser.started>) {
       result: response,
     }));
   } catch (e) {
-    console.error(e)
+    console.error(e);
     yield put(actions.getUser.failed({
       params: action.payload,
       error: e,
-    }))
+    }));
   }
 }
 
@@ -98,13 +98,13 @@ function* getAllUsers() {
     yield put(actions.getAllUsers.done({
       params: {},
       result: response,
-    }))
+    }));
   } catch (e) {
     console.log(e);
     yield put(actions.getAllUsers.failed({
       params: {},
       error: e,
-    }))
+    }));
   }
 }
 

@@ -30,12 +30,12 @@ export const Editable: React.FC<IProps> = ({
 
   const handleKeyDown = (event: any, type: any) => {
     const { key } = event;
-    const keys = ["Escape", "Tab"];
-    const enterKey = "Enter";
+    const keys = ['Escape', 'Tab'];
+    const enterKey = 'Enter';
     const allKeys = [...keys, enterKey];
     if (
-      (type === "textarea" && keys.indexOf(key) > -1) ||
-      (type !== "textarea" && allKeys.indexOf(key) > -1)
+      (type === 'textarea' && keys.indexOf(key) > -1) ||
+      (type !== 'textarea' && allKeys.indexOf(key) > -1)
     ) {
       setEditing(false);
       onEndEditing!();
@@ -46,14 +46,17 @@ export const Editable: React.FC<IProps> = ({
     <div {...props}>
       {isEditing && canEdit ? (
         <div
-          onBlur={() => {setEditing(false), onEndEditing!()}}
+          onBlur={() => { 
+            setEditing(false);
+            onEndEditing!();
+          }}
           onKeyDown={e => handleKeyDown(e, type)}
         >
           {children}
         </div>
       ) : (
         <span onClick={() => setEditing(true)}>
-            {text || placeholder || "Editable content"}
+            {text || placeholder || 'Editable content'}
         </span>
       )}
     </div>

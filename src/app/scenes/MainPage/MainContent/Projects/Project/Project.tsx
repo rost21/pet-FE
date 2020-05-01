@@ -49,7 +49,7 @@ export const Project: React.FC<IProps> = (props) => {
         dispatch(getSingleProject.done({
           params: id,
           result: null,
-        }))
+        }));
       };
     },
     [id]
@@ -61,7 +61,7 @@ export const Project: React.FC<IProps> = (props) => {
 
   React.useEffect(() => {
     setAllDevelopers(developers!);
-    return () => {}
+    return () => {};
   }, [users]);
 
   React.useEffect(() => {
@@ -69,20 +69,20 @@ export const Project: React.FC<IProps> = (props) => {
     setDescription(project ? project!.description : '');
   }, [project]);
 
-  const isUserOwner = React.useMemo(() => !!user && !!project && isUserOwnerProject(user!, project!), [user, project])
+  const isUserOwner = React.useMemo(() => !!user && !!project && isUserOwnerProject(user!, project!), [user, project]);
 
   const renderStatus = (status: string) => {
     switch (status) {
       case 'NOT PAID':
-        return <s.TagStyled color="red">{status}</s.TagStyled>
+        return <s.TagStyled color="red">{status}</s.TagStyled>;
       case 'PAID':
-        return <s.TagStyled color="#87d068">{status}</s.TagStyled>
+        return <s.TagStyled color="#87d068">{status}</s.TagStyled>;
       case 'CLOSED':
-        return <s.TagStyled>{status}</s.TagStyled>
+        return <s.TagStyled>{status}</s.TagStyled>;
       default:
         return;
     }
-  }
+  };
 
   const onCloseProject = () => {
     return Modal.confirm({
@@ -96,31 +96,31 @@ export const Project: React.FC<IProps> = (props) => {
         return;
       },
     });
-  }
+  };
 
   const renderSteps = (id: string) => {
     const { tasks } = project!;
     const steps = tasks.filter(task => task && task.assignTo && task.assignTo.id === id);
     console.log('steps: ', steps);
-    steps.length && setStepsVisible(true)
-  }
+    steps.length && setStepsVisible(true);
+  };
 
   const renderMembers = (members: IUsers) => {
     if (!members.length) {
-      return <div>You don't have team members in this projects yet</div>
+      return <div>You don't have team members in this projects yet</div>;
     }
 
-    return (
-        <List 
-          dataSource={members}
-          renderItem={member => {
-            return (
-              <Item>
-              </Item>
-            )
-          }}
-        />
-    )
+    // return (
+    //     <List 
+    //       dataSource={members}
+    //       renderItem={member => {
+    //         return (
+    //           <Item>
+    //           </Item>
+    //         )
+    //       }}
+    //     />
+    // )
     // dataSource={allDevelopers}
     //                 renderItem={user => (
     //                   <Item key={user.id} onClick={() => selectDeveloper(user.id)}>
@@ -133,18 +133,18 @@ export const Project: React.FC<IProps> = (props) => {
     //                   </Item>
     //                 )}
 
-    // return members && members.map(member => {
-    //   const { firstname = '', lastname = '', username = '', rankings } = member;
-    //   const user = (firstname && lastname) ? `${firstname[0].toUpperCase()}${lastname[0].toUpperCase()}` : username[0].toUpperCase();
-    //   return (
-    //     <s.User key={member.id} onClick={() => renderSteps(member.id)}>
-    //       <s.UserAvatar>{user}</s.UserAvatar>
-    //       <h3 style={{ marginLeft: 10 }}>{`${firstname || ''} ${lastname || ''} ${username || ''}${rankings || ''}`}</h3>
-    //       <CloseOutlined style={{ color: 'red' }} />
-    //     </s.User> 
-    //   )
-    // })
-  }
+    return members && members.map(member => {
+      const { firstname = '', lastname = '', username = '', rankings } = member;
+      const user = (firstname && lastname) ? `${firstname[0].toUpperCase()}${lastname[0].toUpperCase()}` : username[0].toUpperCase();
+      return (
+        <s.User key={member.id} onClick={() => renderSteps(member.id)}>
+          <s.UserAvatar>{user}</s.UserAvatar>
+          <h3 style={{ marginLeft: 10 }}>{`${firstname || ''} ${lastname || ''} ${username || ''}${rankings || ''}`}</h3>
+          <CloseOutlined style={{ color: 'red' }} />
+        </s.User> 
+      );
+    });
+  };
 
   const filterDevelopersByLanguage = (languages: string[]) => {
     if (!allDevelopers) {
@@ -165,7 +165,7 @@ export const Project: React.FC<IProps> = (props) => {
         newList = developers!;
     }
     setAllDevelopers(newList);
-  }
+  };
 
   const selectDeveloper = (id: string) => {
     const updatedDevelopers = allDevelopers.map(dev => {
@@ -173,23 +173,23 @@ export const Project: React.FC<IProps> = (props) => {
         return { ...dev, isSelected: !dev.isSelected };
       }
       return { ...dev };
-    })
+    });
     setAllDevelopers(updatedDevelopers);
-  }
+  };
 
   const addDevelopers = () => {
     const ids = allDevelopers.filter(dev => dev.isSelected).map(dev => dev.id);
     ids.length && dispatch(addMembersToProject.started(ids));
-    setDrawerVisible(false)
-  }
+    setDrawerVisible(false);
+  };
 
   const onEndEditingTitle = () => {
     title !== project!.title && dispatch(changeProjectTitle.started(title));
-  }
+  };
 
   const onEndEditingDescription = () => {
     description !== project!.description && dispatch(changeProjectDescription.started(description));
-  }
+  };
 
   const renderUserPopover = (user: IUser) => {
     const { rankings, skills, about } = user;
@@ -199,8 +199,8 @@ export const Project: React.FC<IProps> = (props) => {
         <span><b>Skills:</b> {skills.join(', ') || ''}</span>
         <span><b>About:</b> {about || ''}</span>
       </div>
-    )
-  }
+    );
+  };
 
   return (
     <Spin spinning={isLoading}>
@@ -343,5 +343,5 @@ export const Project: React.FC<IProps> = (props) => {
           </s.ProjectContainer>
         )}
     </Spin>
-  )
-}
+  );
+};

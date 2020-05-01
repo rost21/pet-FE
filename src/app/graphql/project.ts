@@ -151,7 +151,7 @@ const GET_PROJECT = gql`
       endDate
     }
   }
-`
+`;
 
 const UPDATE_PROJECT = gql`
   mutation updateProject ($id: ID!, $data: UpdateProjectPayload!) {
@@ -233,10 +233,10 @@ const UPDATE_PROJECT = gql`
 `;
 
 export const getProjects = () =>
-  client.query({ query: GET_PROJECTS });
+	client.query({ query: GET_PROJECTS });
 
 export const getProject = (id: string) => 
-  client.query({ query: GET_PROJECT, variables: { id } });
+	client.query({ query: GET_PROJECT, variables: { id } });
 
 export const updateProject = (id: string, data: any) =>
-  client.query({ query: UPDATE_PROJECT, variables: { id, data }})
+	client.query({ query: UPDATE_PROJECT, variables: { id, data }});

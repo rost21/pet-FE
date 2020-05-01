@@ -5,7 +5,7 @@ import { LockOutlined, UserOutlined } from '@ant-design/icons';
 import { Form } from '@ant-design/compatible';
 import '@ant-design/compatible/assets/index.css';
 import { Input, Button } from 'antd';
-import { LoginFormContainer, LoginForm, LoginFormTitle } from './styled';
+import { LoginFormContainer, LoginForm, LoginFormTitle, FormItem } from './styled';
 import { FormComponentProps } from '@ant-design/compatible/lib/form';
 import { RouteComponentProps } from 'react-router';
 import ROUTES from 'app/routes';
@@ -13,6 +13,7 @@ import { IRegisterUserVariables } from '../../types';
 import { showNotification } from 'app/utils/notifications';
 
 const emailRegExp = new RegExp(
+  // eslint-disable-next-line
   /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
 );
 
@@ -22,7 +23,7 @@ interface IDispatchProps {
 
 interface IProps extends FormComponentProps, RouteComponentProps, IDispatchProps {}
 
-const RegistrationPage: React.FC<IProps> = (props) => {
+const RegistrationPage: React.FC<IProps> = props => {
   const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
     props.form.validateFields(
@@ -32,7 +33,7 @@ const RegistrationPage: React.FC<IProps> = (props) => {
       ) => {
         if (!err) {
           if (values.password !== values.confirmPassword) {
-            showNotification("Passwords don't match", 'error');
+            showNotification('Passwords don\'t match', 'error');
             return;
           }
           props.registration(values);
@@ -44,17 +45,19 @@ const RegistrationPage: React.FC<IProps> = (props) => {
   const { getFieldDecorator } = props.form;
   return (
     <LoginFormContainer>
+      <img
+        src="https://www.brandbucket.com/sites/default/files/logo_uploads/278374/large_xlancer_0.png"
+        width="260"
+      />
       <LoginForm onSubmit={handleSubmit}>
-        <LoginFormTitle>
-          <LockOutlined /> Registration
-        </LoginFormTitle>
+        <LoginFormTitle>Registration</LoginFormTitle>
         <Form.Item>
           {getFieldDecorator('username', {
             validateTrigger: 'onSubmit',
             rules: [
               { required: true, message: 'Please input your username' },
-              { min: 6, message: 'Minimum length of login is 6' }
-            ]
+              { min: 6, message: 'Minimum length of login is 6' },
+            ],
           })(
             <Input
               prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -69,9 +72,9 @@ const RegistrationPage: React.FC<IProps> = (props) => {
               { required: true, message: 'Please input your email!' },
               {
                 pattern: emailRegExp,
-                message: 'Wrong email'
-              }
-            ]
+                message: 'Wrong email',
+              },
+            ],
           })(
             <Input
               prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -84,8 +87,8 @@ const RegistrationPage: React.FC<IProps> = (props) => {
             validateTrigger: 'onSubmit',
             rules: [
               { required: true, message: 'Please input your Password!' },
-              { min: 6, message: 'Minimum length of password is 6' }
-            ]
+              { min: 6, message: 'Minimum length of password is 6' },
+            ],
           })(
             <Input
               prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -99,8 +102,8 @@ const RegistrationPage: React.FC<IProps> = (props) => {
             validateTrigger: 'onSubmit',
             rules: [
               { required: true, message: 'Please confirm your password!' },
-              { min: 6, message: 'Minimum length of password is 6' }
-            ]
+              { min: 6, message: 'Minimum length of password is 6' },
+            ],
           })(
             <Input
               prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
@@ -109,12 +112,12 @@ const RegistrationPage: React.FC<IProps> = (props) => {
             />
           )}
         </Form.Item>
-        <Form.Item>
+        <FormItem>
           <Button type="primary" htmlType="submit" className="login-form-button">
-            Rerister
+            Register
           </Button>
           Or <a onClick={() => props.history.push(ROUTES.LOGIN)}>back to login</a>
-        </Form.Item>
+        </FormItem>
       </LoginForm>
     </LoginFormContainer>
   );
@@ -138,7 +141,8 @@ export const RegistrationPageConnected = connect(
   //   }
   // },
   null,
-  (dispatch) => ({
-    registration: (values: IRegisterUserVariables) => dispatch(actions.registration.started(values))
+  dispatch => ({
+    registration: (values: IRegisterUserVariables) =>
+      dispatch(actions.registration.started(values)),
   })
 )(WrappedNormalRegistrationForm);
