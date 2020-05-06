@@ -1,6 +1,5 @@
 import styled from 'styled-components';
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
+import { Form } from 'antd';
 
 export const LoginFormContainer = styled.div`
   display: flex;
@@ -16,7 +15,7 @@ export const LoginFormContainer = styled.div`
   }
 `;
 
-export const LoginFormTitle = styled.div`
+export const FormTitle = styled.div`
   text-align: center;
   font-weight: 600;
   font-size: 25px;
@@ -24,10 +23,4 @@ export const LoginFormTitle = styled.div`
 
 export const LoginForm = styled(Form)`
   max-width: 300px;
-`;
-
-export const FormItem = styled(Form.Item)`
-  & > .ant-col {
-    width: 100%;
-  }
 `;

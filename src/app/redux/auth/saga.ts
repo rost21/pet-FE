@@ -1,28 +1,23 @@
 import { takeLatest, call, put } from 'redux-saga/effects';
 import * as actions from './actions';
-import { login as loginApi, getUser as getUserApi, getUsers } from '../../graphql/user';
-import { ILoginUserResponse, IUser } from '../../types';
+import { register as registerApi, login as loginApi, getUser as getUserApi, getUsers } from '../../graphql/user';
+import { ILoginUserResponse, IUser, IRegisterUserResponse } from '../../types';
 import { history } from '../../../main';
 import ROUTES from '../../routes';
 import { showNotification } from 'app/utils/notifications';
 
 function* registration(action: ReturnType<typeof actions.registration.started>) {
   try {
-    // const response: IRegisterUserResponse = yield call(api.registration, action.payload);
+    const payload = action.payload;
+    const { data: { register: response } }: { data: { register: IRegisterUserResponse } } = yield call(registerApi, payload);
 
-    // if (response.error) {
-    //   if (!response.error.errors) {
-    //     showNotification(response.error, 'error')
-    //     return;
-    //   }
-
-    //   const errors = response.error.errors;
-    //   Object.keys(errors).map((key) => showNotification(errors[key].message, 'error'));
-    //   return;
-    // }
+    if (response && !response.isCreated) {
+      showNotification(response.message!, 'error');
+      return;
+    }
 
     showNotification('Successful registration', 'success');
-    yield history.push(ROUTES.LOGIN);
+    history.push(ROUTES.LOGIN);
   } catch (e) {
     console.error(e);
   }

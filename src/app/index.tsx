@@ -1,8 +1,8 @@
 import * as React from 'react';
 import { Route, Switch, Redirect } from 'react-router';
 import { hot } from 'react-hot-loader';
-import { LoginPageConnected } from 'app/scenes/Auth/LoginPage';
-import { RegistrationPageConnected } from 'app/scenes/Auth/Registration';
+import { LoginPage } from 'app/scenes/Auth/LoginPage';
+import { RegistrationPage } from 'app/scenes/Auth/Registration';
 import { MainPage } from 'app/scenes/MainPage/MainPage';
 import 'antd/dist/antd.css';
 import ROUTES from './routes';
@@ -21,8 +21,8 @@ export const App = hot(module)(() => (
 		}}
 	>
 		<Switch>
-			<Route path={ROUTES.LOGIN} component={LoginPageConnected} />
-			<Route path={ROUTES.REGISTRATION} component={RegistrationPageConnected} />
+			<Route path={ROUTES.LOGIN} component={LoginPage} />
+			<Route path={ROUTES.REGISTRATION} component={RegistrationPage} />
 			<Route path={ROUTES.MAIN} component={MainPage} />
 			<Redirect to={ROUTES.LOGIN} />
 		</Switch>
