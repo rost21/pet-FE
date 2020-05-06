@@ -2,12 +2,19 @@ export interface IRegisterUserVariables {
   username: string;
   email: string;
   password: string;
+  firstname: string;
+  lastname: string;
+  dateOfBirth?: string;
+  isCustomer: boolean;
+  phone?: string;
+  skills?: string[];
+  role?: string;
+  about?: string;
 }
 
 export interface IRegisterUserResponse {
-  createdUser: IRegisterUserVariables;
-  isUserCreated: boolean;
-  error?: any;
+  isCreated: boolean;
+  message?: string;
 }
 
 export interface ILoginUserVariables {
@@ -17,9 +24,6 @@ export interface ILoginUserVariables {
 
 export interface ILoginUserResponse {
   isLoggedIn: boolean;
-  // id: string;
-  // username: string;
-  // email: string;
   token: string;
 }
 

@@ -36,41 +36,41 @@ const GET_PROJECTS = gql`
         rankings
         about
       }
-      tasks {
-        id
-        title
-        description
-        type
-        reporter {
-          id
-          firstname
-          lastname
-          username
-          email
-          phone
-          dateOfBirth
-          role
-          isCustomer
-          skills
-          rankings
-          about
-        }
-        assignTo {
-          id
-          firstname
-          lastname
-          username
-          email
-          phone
-          dateOfBirth
-          role
-          isCustomer
-          skills
-          rankings
-          about
-        }
-        status
-      }
+      # tasks {
+      #   id
+      #   title
+      #   description
+      #   type
+      #   reporter {
+      #     id
+      #     firstname
+      #     lastname
+      #     username
+      #     email
+      #     phone
+      #     dateOfBirth
+      #     role
+      #     isCustomer
+      #     skills
+      #     rankings
+      #     about
+      #   }
+      #   assignTo {
+      #     id
+      #     firstname
+      #     lastname
+      #     username
+      #     email
+      #     phone
+      #     dateOfBirth
+      #     role
+      #     isCustomer
+      #     skills
+      #     rankings
+      #     about
+      #   }
+      #   status
+      # }
       startDate
       endDate
     }

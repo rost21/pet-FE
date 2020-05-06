@@ -1,104 +1,105 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Form } from '@ant-design/compatible';
-import '@ant-design/compatible/assets/index.css';
+import { useDispatch } from 'react-redux';
+import { LockOutlined } from '@ant-design/icons';
+import { Form } from 'antd';
 import { Input, Button } from 'antd';
-import { LoginFormContainer, LoginForm, LoginFormTitle, FormItem } from './styled';
-import { FormComponentProps } from '@ant-design/compatible/lib/form';
+import { LoginFormContainer, FormTitle } from './styled';
 import { RouteComponentProps } from 'react-router';
 import ROUTES from '../../routes';
-import { ILoginUserVariables } from '../../types';
 import * as actions from '../../redux/auth/actions';
 
-interface IDispatchProps {
-  login: (values: ILoginUserVariables) => void;
-}
+interface IProps extends RouteComponentProps {}
 
-interface IProps extends FormComponentProps, RouteComponentProps, IDispatchProps {}
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 8,
+    },
+  },
+};
 
-const LoginPage: React.FC<IProps> = (props) => {
-	const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		props.form.validateFields(
-			(err: any, values: { password: string; username: string }) => {
-				if (!err) {
-					props.login(values);
-				}
-			}
-		);
-	};
+export const LoginPage: React.FC<IProps> = props => {
+  const dispatch = useDispatch();
+  const [form] = Form.useForm();
 
-	const { getFieldDecorator } = props.form;
+  const onFinish = (values: any) => {    
+    dispatch(actions.login.started(values));
+  };
+
 	return (
 		<LoginFormContainer>
 			<img src="https://www.brandbucket.com/sites/default/files/logo_uploads/278374/large_xlancer_0.png" width="260" />
-			<LoginForm onSubmit={handleSubmit}>
-				<LoginFormTitle>
-					<LockOutlined /> Login
-				</LoginFormTitle>
-				<FormItem>
-					{getFieldDecorator('username', {
-						validateTrigger: 'onSubmit',
-						rules: [
-							{ required: true, message: 'Please input your username!' },
-							{ min: 6, message: 'Minimum length of login is 6' }
-						]
-					})(
-						<Input
-							prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-							placeholder="Username"
-						/>
-					)}
-				</FormItem>
-				<FormItem>
-					{getFieldDecorator('password', {
-						validateTrigger: 'onSubmit',
-						rules: [
-							{ required: true, message: 'Please input your Password!' },
-							{ min: 6, message: 'Minimum length of password is 6' }
-						]
-					})(
-						<Input
-							prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-							type="password"
-							placeholder="Password"
-						/>
-					)}
-				</FormItem>
-				<FormItem>
-					<Button type="primary" htmlType="submit" className="login-form-button">
-            Log in
-					</Button>
-          Or <a onClick={() => props.history.push(ROUTES.REGISTRATION)}>register now!</a>
-					<a className="login-form-forgot" href="#">
-            Forgot password
-					</a>
-				</FormItem>
-			</LoginForm>
+      <FormTitle>
+			  <LockOutlined /> Login
+			</FormTitle>
+      <Form
+        {...formItemLayout}
+        form={form}
+        name="register"
+        onFinish={onFinish}
+        initialValues={{
+          prefix: '38',
+        }}
+        scrollToFirstError
+        style={{ marginTop: 16, maxWidth: 400 }}
+      >
+      
+        <Form.Item
+          name="username"
+          label="Username"
+          validateTrigger="onSubmit"
+          rules={[
+            { required: true, message: 'Please input your username!', whitespace: false },
+            { min: 6, message: 'Minimum length of login is 6' },
+            { max: 20, message: 'Maximum length of login is 20' }
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="password"
+          label="Password"
+          validateTrigger="onSubmit"
+          rules={[
+            { required: true, message: 'Please input your password!' },
+            { min: 6, message: 'Minimum length of password is 6' }
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item {...tailFormItemLayout}>
+          <>
+            <Button type="primary" htmlType="submit" className="login-form-button">
+              Log in
+            </Button>
+            <div style={{ marginTop: 8 }}>
+              Or <a onClick={() => props.history.push(ROUTES.REGISTRATION)}>register now</a>
+              <a className="login-form-forgot" href="#">
+                Forgot password
+              </a>
+            </div>
+          </>
+        </Form.Item>
+        
+      </Form>
+	
 		</LoginFormContainer>
 	);
 };
-
-const WrappedNormalLoginForm = Form.create({ name: 'normal_login' })(LoginPage);
-
-export const LoginPageConnected = connect(
-	// (state) => {
-	//   const comeFrom =
-	//     get(
-	//       state.modals.openedModalWindows.find(
-	//         m => m.type === ModalTypes.MOBILE_FULL_SCREEN_VIEW_ACTIONS
-	//       ),
-	//       'extra.comeFrom'
-	//     ) || ''
-	//   return {
-	//     isAuthenticated: state.auth.isLoggedIn,
-	//     publicImage: isReportEnabled(state) ? state.search.selectedImageId : '',
-	//     comeFrom
-	//   }
-	// },
-	null,
-	(dispatch): IDispatchProps => ({
-		login: (values: ILoginUserVariables) => dispatch(actions.login.started(values))
-	})
-)(WrappedNormalLoginForm);

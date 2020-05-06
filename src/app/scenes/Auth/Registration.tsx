@@ -1,148 +1,243 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import * as actions from '../../redux/auth/actions';
-import { LockOutlined, UserOutlined } from '@ant-design/icons';
-import { Form } from '@ant-design/compatible';
+import * as dayjs from 'dayjs';
 import '@ant-design/compatible/assets/index.css';
-import { Input, Button } from 'antd';
-import { LoginFormContainer, LoginForm, LoginFormTitle, FormItem } from './styled';
+import { Input, Button, Checkbox, Form, Select, DatePicker, Row, Col } from 'antd';
+import { LoginFormContainer, FormTitle } from './styled';
 import { FormComponentProps } from '@ant-design/compatible/lib/form';
 import { RouteComponentProps } from 'react-router';
 import ROUTES from 'app/routes';
-import { IRegisterUserVariables } from '../../types';
 import { showNotification } from 'app/utils/notifications';
+import { PROGRAMMING_LANGUAGES } from 'app/utils/constants';
 
-const emailRegExp = new RegExp(
-  // eslint-disable-next-line
-  /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
-);
+const formItemLayout = {
+  labelCol: {
+    xs: { span: 24 },
+    sm: { span: 8 },
+  },
+  wrapperCol: {
+    xs: { span: 24 },
+    sm: { span: 16 },
+  },
+};
 
-interface IDispatchProps {
-  registration: (values: IRegisterUserVariables) => void;
-}
+const tailFormItemLayout = {
+  wrapperCol: {
+    xs: {
+      span: 24,
+      offset: 0,
+    },
+    sm: {
+      span: 16,
+      offset: 8,
+    },
+  },
+};
 
-interface IProps extends FormComponentProps, RouteComponentProps, IDispatchProps {}
+interface IProps extends FormComponentProps, RouteComponentProps {}
 
-const RegistrationPage: React.FC<IProps> = props => {
-  const handleSubmit = (e: React.SyntheticEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    props.form.validateFields(
-      (
-        err: any,
-        values: { username: string; email: string; password: string; confirmPassword: string }
-      ) => {
-        if (!err) {
-          if (values.password !== values.confirmPassword) {
-            showNotification('Passwords don\'t match', 'error');
-            return;
-          }
-          props.registration(values);
-        }
-      }
-    );
+export const RegistrationPage: React.FC<IProps> = (props) => {
+  const dispatch = useDispatch();
+  const [isCustomer, setIsCustomer] = React.useState(false);
+  const [form] = Form.useForm();
+
+  const onFinish = (values: any) => {
+    if (values.password !== values.confirmPassword) {
+      showNotification('Passwords don\'t match', 'error');
+      return;
+    }
+    const { dateOfBirth, prefix } = values;
+    const phone = prefix.concat(values.phone);
+    delete values.confirmPassword; // delete property confirmPassword
+    delete values.prefix; // delete property prefix
+
+    dispatch(actions.registration.started({
+      ...values,
+      isCustomer,
+      phone,
+      dateOfBirth: dayjs(dateOfBirth).valueOf().toString()
+    }));
   };
 
-  const { getFieldDecorator } = props.form;
+  const prefixSelector = (
+    <Form.Item name="prefix" noStyle>
+      <Select style={{ width: 70 }}>
+        <Select.Option value="+38">+38</Select.Option>
+        <Select.Option value="+1">+1</Select.Option>
+      </Select>
+    </Form.Item>
+  );
+
   return (
     <LoginFormContainer>
       <img
         src="https://www.brandbucket.com/sites/default/files/logo_uploads/278374/large_xlancer_0.png"
         width="260"
       />
-      <LoginForm onSubmit={handleSubmit}>
-        <LoginFormTitle>Registration</LoginFormTitle>
-        <Form.Item>
-          {getFieldDecorator('username', {
-            validateTrigger: 'onSubmit',
-            rules: [
-              { required: true, message: 'Please input your username' },
-              { min: 6, message: 'Minimum length of login is 6' },
-            ],
-          })(
-            <Input
-              prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="Username"
-            />
-          )}
+      <FormTitle>Registration</FormTitle>
+      
+      <Form
+        {...formItemLayout}
+        form={form}
+        name="register"
+        onFinish={onFinish}
+        initialValues={{
+          prefix: '+38',
+        }}
+        scrollToFirstError
+        style={{ marginTop: 16 }}
+      >
+        <Form.Item
+          name="email"
+          label="E-mail"
+          validateTrigger="onSubmit"
+          rules={[
+            { type: 'email', message: 'The input is not valid E-mail!' },
+            { required: true, message: 'Please input your E-mail!' }
+          ]}
+        >
+          <Input />
         </Form.Item>
-        <Form.Item>
-          {getFieldDecorator('email', {
-            validateTrigger: 'onSubmit',
-            rules: [
-              { required: true, message: 'Please input your email!' },
-              {
-                pattern: emailRegExp,
-                message: 'Wrong email',
+
+        <Form.Item
+          name="username"
+          label="Username"
+          validateTrigger="onSubmit"
+          rules={[
+            { required: true, message: 'Please input your username!', whitespace: false },
+            { min: 6, message: 'Minimum length of login is 6' },
+            { max: 20, message: 'Maximum length of login is 20' }
+          ]}
+        >
+          <Input />
+        </Form.Item>
+
+        <Form.Item
+          name="password"
+          label="Password"
+          validateTrigger="onSubmit"
+          rules={[
+            { required: true, message: 'Please input your password!' },
+            { min: 6, message: 'Minimum length of password is 6' }
+          ]}
+        >
+          <Input.Password />
+        </Form.Item>
+
+        <Form.Item
+          name="confirmPassword"
+          label="Confirm Password"
+          dependencies={['password']}
+          hasFeedback
+          rules={[
+            { required: true, message: 'Please confirm your password!' },
+            ({ getFieldValue }) => ({
+              validator(rule, value) {
+                if (!value || getFieldValue('password') === value) {
+                  return Promise.resolve();
+                }
+                return Promise.reject('Passwords that you entered don\'t match!');
               },
-            ],
-          })(
-            <Input
-              prefix={<UserOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-              placeholder="Email"
-            />
-          )}
+            }),
+          ]}
+        >
+          <Input.Password />
         </Form.Item>
-        <Form.Item>
-          {getFieldDecorator('password', {
-            validateTrigger: 'onSubmit',
-            rules: [
-              { required: true, message: 'Please input your Password!' },
-              { min: 6, message: 'Minimum length of password is 6' },
-            ],
-          })(
-            <Input
-              prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-              type="password"
-              placeholder="Password"
-            />
-          )}
+
+        <Row
+          justify="end"
+          gutter={8}
+        >
+          <Col span={12}>
+            <Form.Item
+              name="firstname"
+              label="Firstname"
+              rules={[
+                { required: true, message: 'Please confirm your firstname!' }
+              ]}
+            >
+              <Input placeholder="Firstname" style={{ width: '80%' }} />
+            </Form.Item>
+          </Col>
+          <Col span={10}>
+            <Form.Item
+              name="lastname"
+              label="Lastname"
+              rules={[
+                { required: true, message: 'Please confirm your lastname!' }
+              ]}
+            >
+              <Input placeholder="Lastname" />
+            </Form.Item>
+          </Col>
+        </Row>
+
+        <Form.Item
+          name="dateOfBirth"
+          label="Date of birth"
+        >
+          <DatePicker style={{ width: '100%' }} />    
         </Form.Item>
-        <Form.Item>
-          {getFieldDecorator('confirmPassword', {
-            validateTrigger: 'onSubmit',
-            rules: [
-              { required: true, message: 'Please confirm your password!' },
-              { min: 6, message: 'Minimum length of password is 6' },
-            ],
-          })(
-            <Input
-              prefix={<LockOutlined style={{ color: 'rgba(0,0,0,.25)' }} />}
-              type="password"
-              placeholder="Confirm password"
-            />
-          )}
+        <Form.Item
+          name="phone"
+          label="Phone Number"
+        >
+          <Input addonBefore={prefixSelector} type="number" style={{ width: '100%' }} />
         </Form.Item>
-        <FormItem>
-          <Button type="primary" htmlType="submit" className="login-form-button">
+
+        <Form.Item
+          name="isCustomer"
+          valuePropName="checked"
+          {...tailFormItemLayout}
+        >
+          <Checkbox checked={isCustomer} onChange={() => setIsCustomer(!isCustomer)}>
+            I'm customer
+          </Checkbox>
+        </Form.Item>
+
+        {!isCustomer && (
+          <>
+            <Form.Item
+              name="skills"
+              label="Select skills"
+            >
+              <Select
+                mode="multiple"
+                placeholder="Select languages"
+                size="middle"
+                showSearch={false}
+                style={{ maxWidth: 500 }}
+              >
+                {PROGRAMMING_LANGUAGES.map(item => <Select.Option key={item} value={item}>{item}</Select.Option>)}
+              </Select>            
+            </Form.Item>
+
+            <Form.Item
+              name="role"
+              label="Role"
+            >
+              <Input placeholder="Example: Fullstack developer" />
+            </Form.Item>
+            </>
+          )}
+
+        <Form.Item
+          name="about"
+          label="About you"
+        >
+          <Input.TextArea placeholder="About" autoSize={{ maxRows: 4 }}/>
+        </Form.Item>
+        <Form.Item {...tailFormItemLayout}>
+          <>
+          <Button type="primary" htmlType="submit">
             Register
           </Button>
-          Or <a onClick={() => props.history.push(ROUTES.LOGIN)}>back to login</a>
-        </FormItem>
-      </LoginForm>
+          <div style={{ marginTop: 8 }}>Or <a onClick={() => props.history.push(ROUTES.LOGIN)}>back to login</a></div>
+          </>
+        </Form.Item>
+        
+      </Form>
     </LoginFormContainer>
   );
 };
-
-const WrappedNormalRegistrationForm = Form.create({ name: 'normal_register' })(RegistrationPage);
-
-export const RegistrationPageConnected = connect(
-  // (state) => {
-  //   const comeFrom =
-  //     get(
-  //       state.modals.openedModalWindows.find(
-  //         m => m.type === ModalTypes.MOBILE_FULL_SCREEN_VIEW_ACTIONS
-  //       ),
-  //       'extra.comeFrom'
-  //     ) || ''
-  //   return {
-  //     isAuthenticated: state.auth.isLoggedIn,
-  //     publicImage: isReportEnabled(state) ? state.search.selectedImageId : '',
-  //     comeFrom
-  //   }
-  // },
-  null,
-  dispatch => ({
-    registration: (values: IRegisterUserVariables) =>
-      dispatch(actions.registration.started(values)),
-  })
-)(WrappedNormalRegistrationForm);

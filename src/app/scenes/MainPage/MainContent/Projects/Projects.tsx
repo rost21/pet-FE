@@ -130,7 +130,7 @@ export const Projects: React.FC<IProps> = (props) => {
       </ProjectsHeader>
       <Spin spinning={isLoading}>
         <ProjectsContainer>
-          {stateProjects.length ?
+          {stateProjects && stateProjects.length ?
             stateProjects.map((project) => <ProjectComponent key={project.id} project={project} redirectTo={props.history.push} />) :
             <div
               style={{

@@ -1,5 +1,6 @@
 import { client } from '../config/apollo';
 import gql from 'graphql-tag';
+import { ILoginUserVariables } from 'app/types';
 
 const LOGIN = gql`
   query login($data: LoginPayload!) {
@@ -33,6 +34,7 @@ const REGISTER = gql`
   mutation register($data: RegisterPayload!) {
     register(data: $data) {
       isCreated
+      message
     }
   }
 `;
@@ -56,13 +58,13 @@ const GET_USERS = gql`
   }
 `;
 
-export const login = (data: { username: string, password: string }) => 
+export const login = (data: ILoginUserVariables) => 
 	client.query({ query: LOGIN, variables: { data } });
 
 export const getUser = (token: string) =>
 	client.query({ query: GET_USER, variables: { token } });
 
-export const register = (data: { username: string, email: string, password: string, isCustomer: boolean }) =>
+export const register = (data: any) =>
 	client.mutate({ mutation: REGISTER, variables: { data } });
 
 export const getUsers = () =>
