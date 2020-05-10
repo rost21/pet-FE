@@ -1,4 +1,5 @@
-import { IProjects, IUser, IProject } from 'app/types';
+import { IProjects, IUser, IProject, ProjectStatuses } from 'app/types';
+import { IUserExtend } from 'app/scenes/MainPage/MainContent/Projects/Project/Project';
 
 export const findProjects = (projects: IProjects, searchValue: string) => {
   return projects.filter((project) => project.title.includes(searchValue));
@@ -18,4 +19,21 @@ export const changeViewProjects = (projects: IProjects, type: string, user: IUse
 
 export const isUserOwnerProject = (user: IUser, project: IProject) => {
   return user.id === project.owner.id;
+};
+
+export const getDevelopersNotInProject = (allDevelopers: IUserExtend[], project: IProject) => {
+  if (!allDevelopers || !project) {
+    return null;
+  }
+
+  return allDevelopers.filter(developer => project.members.every(member => member.id !== developer.id));
+};
+
+export const isProjectClosed = (project: IProject) => project.status === ProjectStatuses.CLOSED;
+
+export const cutString = (string: string, length: number) => {
+  if (!string) {
+    return null;
+  }
+  return string.substr(0, length) + ' ...';
 };

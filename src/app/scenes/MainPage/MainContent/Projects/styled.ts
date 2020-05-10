@@ -24,9 +24,10 @@ export const ProjectsContainer = styled.div`
   margin: 10px 0;
 `;
 
-export const ProjectStyled = styled(Card)`
+export const ProjectCardStyled = styled(Card)`
   width: 300px;
-  height: 160px;
+  min-height: 160px;
+  max-height: 200px;
   margin: 10px 10px 0 0 !important;
 `;
 

@@ -59,10 +59,10 @@ export interface ITask {
   id: string;
   title: string;
   description: string;
-  type: string;
+  type: 'bug' | 'improvement' | 'story';
   reporter: IUser;
   assignTo: IUser;
-  status: string
+  status: 'ready' | 'wip' | 'done' | 'closed';
 }
 
 export type ITasks = ITask[]
@@ -84,4 +84,10 @@ export type IProjects = IProject[]
 export interface UpdateProjectResponse {
   project: IProject;
   isUpdated: boolean;
+}
+
+export enum ProjectStatuses {
+  NOT_PAID = 'NOT_PAID',
+  PAID = 'PAID',
+  CLOSED = 'CLOSED'
 }

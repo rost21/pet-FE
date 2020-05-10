@@ -82,9 +82,9 @@ function* addMembersToProject(action: ReturnType<typeof actions.addMembersToProj
   try {
     const ids = action.payload;
     const project: IProject = yield select((state: IRootReducer) => state.project.project);
-    const projectIds = project.members.map(member => member.id);
+    const membersIds = project.members.map(member => member.id);
 
-    const payload = { members: [...new Set([...projectIds, ...ids])] };
+    const payload = { members: [...new Set([...membersIds, ...ids])] };
 
     const { data: { updateProject: response } }: { data: { updateProject: UpdateProjectResponse } } = yield call(updateProject, project.id, payload); 
 
@@ -111,6 +111,7 @@ function* changeProjectTitle(action: ReturnType<typeof actions.changeProjectTitl
     const project: IProject = yield select((state: IRootReducer) => state.project.project);
 
     const payload = { title: changedTitle };
+    
     const { data: { updateProject: response } }: { data: { updateProject: UpdateProjectResponse } } = yield call(updateProject, project.id, payload);
     
     if (!response.isUpdated) {
@@ -141,6 +142,7 @@ function* changeProjectDescription(action: ReturnType<typeof actions.changeProje
     const project: IProject = yield select((state: IRootReducer) => state.project.project);
 
     const payload = { description: changedDescription };
+    
     const { data: { updateProject: response } }: { data: { updateProject: UpdateProjectResponse } } = yield call(updateProject, project.id, payload);
     
     if (!response.isUpdated) {
@@ -165,35 +167,31 @@ function* changeProjectDescription(action: ReturnType<typeof actions.changeProje
   }
 }
 
-// function* deleteUserFromMembers(action: ReturnType<typeof actions.deleteUserFromMembers.started>) {
-//   try {
-//     const id = action.payload;
-//     const project: IProject = yield select((state: IRootReducer) => state.project.project);
+function* deleteUserFromMembers(action: ReturnType<typeof actions.deleteUserFromMembers.started>) {
+  try {
+    const id = action.payload;
+    const project: IProject = yield select((state: IRootReducer) => state.project.project);
+    const membersIds = project.members.map(member => member.id);
 
-//     const payload = { members: changedDescription };
-//     const { data: { updateProject: response } }: { data: { updateProject: UpdateProjectResponse } } = yield call(updateProject, project.id, payload);
+    const payload = { members: membersIds.filter(member => member !== id) };
+    const { data: { updateProject: response } }: { data: { updateProject: UpdateProjectResponse } } = yield call(updateProject, project.id, payload);
     
-//     if (!response.isUpdated) {
-//       return;
-//     }
+    if (!response.isUpdated) {
+      return;
+    }
 
-//     const updatedProject = {
-//       ...project,
-//       description: changedDescription,
-//     }
-
-//     yield put(actions.getSingleProject.done({
-//       params: project.id,
-//       result: updatedProject,
-//     }))
-//   } catch (e) {
-//     console.log(e);
-//     yield put(actions.changeProjectTitle.failed({
-//       params: action.payload,
-//       error: e,
-//     }))
-//   }
-// }
+    yield put(actions.getSingleProject.done({
+      params: project.id,
+      result: response.project,
+    }));
+  } catch (e) {
+    console.log(e);
+    yield put(actions.changeProjectTitle.failed({
+      params: action.payload,
+      error: e,
+    }));
+  }
+}
 
 // function* findProjects(action: ReturnType<typeof actions.findProjects>) {
 //   const searchValue = action.payload;
@@ -218,5 +216,5 @@ export function* saga() {
   yield takeLatest(actions.addMembersToProject.started, addMembersToProject);
   yield takeLatest(actions.changeProjectTitle.started, changeProjectTitle);
   yield takeLatest(actions.changeProjectDescription.started, changeProjectDescription);
-  // yield takeLatest(actions.deleteUserFromMembers.started, deleteUserFromMembers);
+  yield takeLatest(actions.deleteUserFromMembers.started, deleteUserFromMembers);
 }
