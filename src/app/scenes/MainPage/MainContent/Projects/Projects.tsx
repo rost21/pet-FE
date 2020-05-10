@@ -6,7 +6,7 @@ import {
 } from 'react-redux';
 import { Container, Title, ProjectsContainer, ProjectsHeader } from './styled';
 import { IRootReducer } from 'app/redux/rootReducer';
-import { ProjectComponent } from './ProjectComponent';
+import { ProjectCard } from './ProjectCard';
 import { Input,
   Spin, Select
 } from 'antd';
@@ -131,7 +131,7 @@ export const Projects: React.FC<IProps> = (props) => {
       <Spin spinning={isLoading}>
         <ProjectsContainer>
           {stateProjects && stateProjects.length ?
-            stateProjects.map((project) => <ProjectComponent key={project.id} project={project} redirectTo={props.history.push} />) :
+            stateProjects.map((project) => <ProjectCard key={project.id} project={project} redirectTo={props.history.push} />) :
             <div
               style={{
                 display: 'flex',
