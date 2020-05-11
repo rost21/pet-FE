@@ -13,7 +13,7 @@ import { IRootReducer } from 'app/redux/rootReducer';
 
 const { Sider } = Layout;
 
-export const MainPage: React.FC<IProps> = (props) => {
+export const MainPage: React.FC<IProps> = props => {
   const [collapsed, setCollapsed] = React.useState(false);
   const dispatch = useDispatch();
   const { isLoggedIn, isLoading: isLoadingUser } = useSelector((state: IRootReducer) => state.auth);

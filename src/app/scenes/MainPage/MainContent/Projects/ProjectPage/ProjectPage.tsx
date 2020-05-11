@@ -5,44 +5,41 @@ import { RouteComponentProps } from 'react-router';
 import {
   getSingleProject,
   closeProject,
-  addMembersToProject,
   changeProjectTitle,
   changeProjectDescription,
   deleteUserFromMembers
 } from 'app/redux/projects/actions';
 import { IRootReducer } from 'app/redux/rootReducer';
-import { Spin, Button, Modal, Drawer, Select, List, Input, Popover } from 'antd';
+import { Spin, Button, Modal, List, Input } from 'antd';
 import * as s from '../styled';
 import ROUTES from 'app/routes';
 import { IUsers, IUser } from 'app/types';
 import { getAllUsers } from 'app/redux/auth/actions';
-import { PROGRAMMING_LANGUAGES } from 'app/utils/constants';
-import { UserSelect, SelectableRow, Item } from './styled';
-import { CheckOutlined, ExclamationCircleOutlined, CloseOutlined } from '@ant-design/icons';
+import { ExclamationCircleOutlined, CloseOutlined } from '@ant-design/icons';
 import { Editable } from 'app/components/Editable';
-import { isUserOwnerProject, getDevelopersNotInProject, isProjectClosed } from 'app/utils/projects';
+import { isUserOwnerProject, isProjectClosed } from 'app/utils/projects';
+import { AddMembers } from './AddMembers';
+import { Item } from './styled';
 
-interface IProps extends RouteComponentProps<{ id: string}> {}
+interface IProps extends RouteComponentProps<{ id: string }> {}
 
 export interface IUserExtend extends IUser {
   isSelected: boolean;
 }
 
-export const Project: React.FC<IProps> = (props) => {
+export const ProjectPage: React.FC<IProps> = props => {
   const dispatch = useDispatch();
   const titleRef = React.useRef(null);
   const descriptionRef = React.useRef(null);
   const { id } = props.match.params;
 
   const { project, isLoading } = useSelector((state: IRootReducer) => state.project);
-  const { allUsers: users, user } = useSelector((state: IRootReducer) => state.auth);
+  const { user } = useSelector((state: IRootReducer) => state.auth);
 
   const [drawerVisible, setDrawerVisible] = React.useState(false);
   const [stepsVisible, setStepsVisible] = React.useState(false);
-  const [allDevelopers, setAllDevelopers] = React.useState<IUserExtend[]>([]);
   const [title, setTitle] = React.useState('');
   const [description, setDescription] = React.useState('');
-  // const [tasks, setTasks] = React.useState([]);
 
   React.useEffect(() => {
       dispatch(getSingleProject.started(id));
@@ -57,23 +54,12 @@ export const Project: React.FC<IProps> = (props) => {
     }, [id]
   );
 
-  const developers = React.useMemo(() => 
-    users && users!.filter(user => !user.isCustomer).map(user => ({ ...user, isSelected: false })), [users]
-  );
-
   React.useEffect(() => {
-    setAllDevelopers(developers!);
-    return () => {};
-  }, [users]);
-
-  React.useEffect(() => {
-    setTitle(project ? project!.title : '');
-    setDescription(project ? project!.description : '');
+    setTitle(project ? project.title : '');
+    setDescription(project ? project.description : '');
   }, [project]);
 
-  const isUserOwner = React.useMemo(() => !!user && !!project && isUserOwnerProject(user!, project!), [user, project]);
-
-  const developersNotInProject = React.useMemo(() => getDevelopersNotInProject(allDevelopers, project!), [allDevelopers, project]);
+  const isUserOwner = React.useMemo(() => !!user && !!project && isUserOwnerProject(user, project), [user, project]);
 
   const renderStatus = (status: string) => {
     switch (status) {
@@ -119,19 +105,20 @@ export const Project: React.FC<IProps> = (props) => {
     }
 
     return (
-      <List 
+      <List
+        style={{ maxHeight: '100%', overflowY: 'auto' }}
         dataSource={members}
         renderItem={member => {
-          const { firstname = '', lastname = '', username = '', rankings } = member;
-          const user = (firstname && lastname) ? `${firstname[0].toUpperCase()}${lastname[0].toUpperCase()}` : username[0].toUpperCase();
+          const { firstname = '', lastname = '', rankings } = member;
+          const user = `${firstname[0].toUpperCase()}${lastname[0].toUpperCase()}`;
           return (
             <Item key={member.id} onClick={() => renderSteps(member.id)}>
               <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
                   <s.UserAvatar>{user}</s.UserAvatar>
-                  <h3 style={{ marginLeft: 10 }}>{`${firstname || ''} ${lastname || ''} ${username || ''}${rankings || ''}`}</h3>
+                  <h3 style={{ marginLeft: 10 }}>{`${firstname || ''} ${lastname || ''} ${rankings || ''}`}</h3>
                 </div>
-                <CloseOutlined style={{ color: 'red' }} onClick={() => onDeleteMember(member.id)} />
+                {isUserOwner && <CloseOutlined style={{ color: 'red' }} onClick={() => onDeleteMember(member.id)} />}
               </div>
             </Item> 
           );
@@ -140,60 +127,12 @@ export const Project: React.FC<IProps> = (props) => {
     );
   };
 
-  const filterDevelopersByLanguage = (languages: string[]) => {
-    if (!allDevelopers) {
-      return;
-    }
-
-    const searchLanguages = languages;
-    let currentList = [];
-    let newList = [];
-
-    if (searchLanguages.length) {
-      currentList = developers!;
-      newList = currentList.filter(user => {
-          const { skills } = user;
-          return skills.some(skill => searchLanguages.includes(skill));
-        });
-    } else {
-        newList = developers!;
-    }
-    setAllDevelopers(newList);
-  };
-
-  const selectDeveloper = (id: string) => {
-    const updatedDevelopers = allDevelopers.map(dev => {
-      if (id === dev.id) {
-        return { ...dev, isSelected: !dev.isSelected };
-      }
-      return { ...dev };
-    });
-    setAllDevelopers(updatedDevelopers);
-  };
-
-  const addDevelopers = () => {
-    const ids = allDevelopers.filter(dev => dev.isSelected).map(dev => dev.id);
-    ids.length && dispatch(addMembersToProject.started(ids));
-    setDrawerVisible(false);
-  };
-
   const onEndEditingTitle = () => {
     title !== project!.title && dispatch(changeProjectTitle.started(title));
   };
 
   const onEndEditingDescription = () => {
     description !== project!.description && dispatch(changeProjectDescription.started(description));
-  };
-
-  const renderUserPopover = (user: IUser) => {
-    const { rankings, skills, about } = user;
-    return (
-      <div style={{ display: 'flex', flexDirection: 'column', wordBreak: 'break-word', maxWidth: 150 }}>
-        <span><b>Rankings:</b> {rankings || ''}</span>
-        <span><b>Skills:</b> {skills.join(', ') || ''}</span>
-        <span><b>About:</b> {about || ''}</span>
-      </div>
-    );
   };
 
   return (
@@ -274,8 +213,8 @@ export const Project: React.FC<IProps> = (props) => {
                     </Editable>
                   </s.DescriptionBody>
                 </s.ProjectDescription>
-                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', paddingTop: 20 }}>
-                  <div style={{ width: '30%' }}>
+                <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', maxHeight: '75%', paddingTop: 20 }}>
+                  <div style={{ width: '30%', height: '100%' }}>
                     <s.Title>Team members:</s.Title>
                     {renderMembers(project.members)}
                     {isUserOwner && !isProjectClosed(project) &&
@@ -284,56 +223,16 @@ export const Project: React.FC<IProps> = (props) => {
                     </div>}
                   </div>
                   {stepsVisible && 
-                    <div style={{ width: '65%' }}>
+                    <div style={{ width: '70%' }}>
                       <s.Title>Steps</s.Title>
                     </div>
                   }
                 </div>
             </s.ProjectBody>
-            <Drawer
-              title="Add developers to project"
-              width="30%"
-              placement="right"
-              visible={drawerVisible}
-              destroyOnClose
-              onClose={() => setDrawerVisible(false)}
-              footer={
-                <div style={{ textAlign: 'right' }}>
-                  <Button onClick={addDevelopers} type="primary">
-                    Add developers
-                  </Button>
-                </div>
-              }
-            >
-              <Spin spinning={allDevelopers && !allDevelopers.length}>
-                <span>Programming languages</span>
-                <Select
-                  mode="multiple"
-                  style={{ width: '100%', marginTop: 8 }}
-                  placeholder="Select languages"
-                  onChange={filterDevelopersByLanguage}
-                  size="middle"
-                  showSearch={false}
-                >
-                  {PROGRAMMING_LANGUAGES.map(item => <Select.Option key={item} value={item}>{item}</Select.Option>)}
-                </Select>
-                <UserSelect>
-                  <List
-                    dataSource={developersNotInProject!}
-                    renderItem={user => (
-                      <Item key={user.id} onClick={() => selectDeveloper(user.id)}>
-                        <SelectableRow>
-                          <Popover title={`${user.firstname} ${user.lastname}`} placement="right" content={renderUserPopover(user)}>
-                            <span>{user.username}</span>
-                          </Popover>                          
-                          {user.isSelected && <CheckOutlined style={{ color: '#1890ff' }} />}
-                        </SelectableRow>
-                      </Item>
-                    )}
-                  />
-                </UserSelect> 
-              </Spin>
-            </Drawer>
+            <AddMembers
+              drawerVisible={drawerVisible}
+              setDrawerVisible={setDrawerVisible}
+            />
           </s.ProjectContainer>
         ) : (
           <s.ProjectContainer>

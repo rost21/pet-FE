@@ -43,6 +43,7 @@ const data = {
       id: 'closed',
       title: 'Verified & Closed',
       style: {
+        width: 350,
         margin: '0px 8px 0px 0px',
       },
       cards: [] as ITask[],
@@ -142,7 +143,7 @@ export const Board: React.FC<IProps> = props => {
             // draggable
             laneDraggable={false}
             cardDraggable
-            editable
+            //editable
             cardDragClass="draggingCard"
             //laneDragClass="draggingLane"
             style={{

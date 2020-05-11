@@ -1,6 +1,6 @@
-var webpack = require('webpack');
-var path = require('path');
-var package = require('./package.json');
+const webpack = require('webpack');
+const path = require('path');
+const package = require('./package.json');
 
 // variables
 var isProduction = process.argv.indexOf('-p') >= 0 || process.env.NODE_ENV === 'production';
@@ -13,6 +13,7 @@ var MiniCssExtractPlugin = require('mini-css-extract-plugin');
 var CleanWebpackPlugin = require('clean-webpack-plugin');
 const createStyledComponentsTransformer = require('typescript-plugin-styled-components')
   .createTransformer;
+const Dotenv = require('dotenv-webpack');
 
 const styledComponentsTransformer = createStyledComponentsTransformer();
 
@@ -139,6 +140,7 @@ module.exports = {
       NODE_ENV: 'development', // use 'development' unless process.env.NODE_ENV is defined
       DEBUG: false
     }),
+    new Dotenv(),
     new CleanWebpackPlugin(),
     new MiniCssExtractPlugin({
       filename: '[hash].css',
