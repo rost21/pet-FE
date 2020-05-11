@@ -1,5 +1,5 @@
 import { IProjects, IUser, IProject, ProjectStatuses } from 'app/types';
-import { IUserExtend } from 'app/scenes/MainPage/MainContent/Projects/Project/Project';
+import { IUserExtend } from 'app/scenes/MainPage/MainContent/Projects/ProjectPage/ProjectPage';
 
 export const findProjects = (projects: IProjects, searchValue: string) => {
   return projects.filter((project) => project.title.includes(searchValue));

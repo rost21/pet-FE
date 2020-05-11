@@ -20,7 +20,7 @@ import {
 
 interface IProps extends RouteComponentProps {}
 
-export const Projects: React.FC<IProps> = (props) => {
+export const Projects: React.FC<IProps> = props => {
   // const dispatch = useDispatch();
   const { allProjects: projects } = useSelector((state: IRootReducer) => state.project);
   const { user } = useSelector((state: IRootReducer) => state.auth);

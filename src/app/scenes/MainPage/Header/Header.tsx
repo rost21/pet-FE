@@ -9,9 +9,9 @@ import { IProps } from './types';
 import { logout } from '../../../redux/auth/actions';
 
 // @ts-ignore
-const IconHeader = (props) => <Icon {...props} />;
+const IconHeader = props => <Icon {...props} />;
 
-export const Header: React.FC<IProps> = (props) => {
+export const Header: React.FC<IProps> = props => {
   const dispatch = useDispatch();
   const popoverContent = (
     <>

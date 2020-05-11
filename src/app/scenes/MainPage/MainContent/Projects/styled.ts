@@ -55,6 +55,7 @@ export const ProjectBody = styled.div`
   display: flex;
   flex-direction: column;
   padding-top: 20px;
+  height: calc(100% - 50px);
 `;
 
 export const TagStyled = styled(Tag)`
@@ -66,6 +67,7 @@ export const TagStyled = styled(Tag)`
 export const ProjectDescription = styled.div`
   display: flex;
   flex-direction: column;
+  max-height: 25%;
 `;
 
 export const ProjectHeader = styled.div`

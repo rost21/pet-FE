@@ -26,9 +26,11 @@ const authLink = setContext(() => {
 	};
 });
 
+const graphqlUrl = process.env.GRAPHQL_ENDPOINT;
+
 // Create an http link:
 const httpLink = createUploadLink({
-	uri: 'http://127.0.0.1:8001/graphql',
+	uri: graphqlUrl,
 });
 
 const errorLink = onError(({ graphQLErrors }) => {

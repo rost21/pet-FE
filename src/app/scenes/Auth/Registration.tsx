@@ -37,7 +37,7 @@ const tailFormItemLayout = {
 
 interface IProps extends FormComponentProps, RouteComponentProps {}
 
-export const RegistrationPage: React.FC<IProps> = (props) => {
+export const RegistrationPage: React.FC<IProps> = props => {
   const dispatch = useDispatch();
   const [isCustomer, setIsCustomer] = React.useState(false);
   const [form] = Form.useForm();
