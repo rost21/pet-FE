@@ -6,7 +6,7 @@ import { StyledLayout, StyledHeader, StyledContent } from './styled';
 import { Header } from './Header/Header';
 import { ContentRouter } from './MainContent/Content';
 import ROUTES from 'app/routes';
-import { getUser } from 'app/redux/auth/actions';
+import { getUser, getAllUsers } from 'app/redux/auth/actions';
 import { getAllProjects } from 'app/redux/projects/actions';
 import { IProps } from './types';
 import { IRootReducer } from 'app/redux/rootReducer';
@@ -16,10 +16,10 @@ const { Sider } = Layout;
 export const MainPage: React.FC<IProps> = props => {
   const [collapsed, setCollapsed] = React.useState(false);
   const dispatch = useDispatch();
-  const { isLoggedIn, isLoading: isLoadingUser } = useSelector((state: IRootReducer) => state.auth);
+  const { isLoggedIn, isLoadingUser, isLoadingUsers } = useSelector((state: IRootReducer) => state.auth);
   const { isLoading: isLoadingProjects } = useSelector((state: IRootReducer) => state.project);
 
-  const isFetching = isLoadingUser || isLoadingProjects;
+  const isFetching = isLoadingUser || isLoadingUsers || isLoadingProjects;
   
   const onCollapse = React.useCallback(() => {
     setCollapsed(!collapsed);
@@ -28,6 +28,7 @@ export const MainPage: React.FC<IProps> = props => {
   React.useEffect(() => {
     const token = localStorage.getItem('token');
     dispatch(getUser.started({ token: token! }));
+    dispatch(getAllUsers.started({}));
     dispatch(getAllProjects.started(''));
     // component will unmount
     return () => {};
@@ -59,7 +60,7 @@ export const MainPage: React.FC<IProps> = props => {
       <Layout style={{ overflow: 'hidden' }}>
         <StyledHeader>
           <Header
-            replace={props.history.push}
+            redirectTo={props.history.push}
             collapsed={collapsed}
             onCollapse={onCollapse}
           />

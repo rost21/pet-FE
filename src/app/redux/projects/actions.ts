@@ -1,5 +1,5 @@
 import { actionCreatorFactory } from 'typescript-fsa';
-import { IProjects, IProject, UpdateProjectResponse } from 'app/types';
+import { IProjects, IProject, UpdateProjectResponse, CreateProjectPayload } from 'app/types';
 
 const actionCreator = actionCreatorFactory('auth');
 
@@ -7,7 +7,7 @@ export const getAllProjects = actionCreator.async<string, IProjects, string>('GE
 
 export const setProjects = actionCreator<IProjects>('SET_PROJECTS');
 
-export const createProject = actionCreator.async('CREATE_PROJECT');
+export const createProject = actionCreator.async<CreateProjectPayload, IProject, string>('CREATE_PROJECT');
 
 export const getSingleProject = actionCreator.async<string, IProject | null, string>('GET_SINGLE_PROJECT');
 

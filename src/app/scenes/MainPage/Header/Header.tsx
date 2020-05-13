@@ -1,26 +1,42 @@
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
-import { HomeFilled, ProfileFilled, UnlockFilled, UserOutlined } from '@ant-design/icons';
-import { Icon } from '@ant-design/compatible';
-import { Popover } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  HomeFilled,
+  ProfileFilled, 
+  UnlockFilled, 
+  UserOutlined, 
+  MenuFoldOutlined, 
+  MenuUnfoldOutlined 
+} from '@ant-design/icons';
+import { Popover, Button } from 'antd';
 import { PopoverRow, HeaderContainer } from './styled';
 import ROUTES from '../../../routes';
-import { IProps } from './types';
 import { logout } from '../../../redux/auth/actions';
+import { CreateProject } from './CreateProject';
+import { IRootReducer } from 'app/redux/rootReducer';
+import { isCustomer } from 'app/utils/projects';
 
-// @ts-ignore
-const IconHeader = props => <Icon {...props} />;
+interface IProps {
+  collapsed: boolean;
+  onCollapse: () => void;
+  redirectTo: (path: string) => void;
+}
 
 export const Header: React.FC<IProps> = props => {
   const dispatch = useDispatch();
+  const { user } = useSelector((state: IRootReducer) => state.auth);
+  const [drawerVisible, setDrawerVisible] = React.useState(false);
+
+  const isUserCustomer = React.useMemo(() => user && isCustomer(user!), [user]);
+
   const popoverContent = (
     <>
-      <PopoverRow onClick={() => props.replace(ROUTES.MAIN)}>
+      <PopoverRow onClick={() => props.redirectTo(ROUTES.MAIN)}>
         <HomeFilled style={{ paddingRight: 10 }} />
         Dashboard
       </PopoverRow>
 
-      <PopoverRow onClick={() => props.replace(ROUTES.PROFILE)}>
+      <PopoverRow onClick={() => props.redirectTo(ROUTES.PROFILE)}>
         <ProfileFilled style={{ paddingRight: 10 }} />
         My Profile
       </PopoverRow>
@@ -32,21 +48,35 @@ export const Header: React.FC<IProps> = props => {
     </>
   );
 
+  const iconStyle = { fontSize: 25 };
+
   return (
     <HeaderContainer>
-      <div>
-        <IconHeader
-          className="icons-header"
-          type={props.collapsed ? 'menu-unfold' : 'menu-fold'}
-          onClick={props.onCollapse}
-          style={{ alignSelf: 'flex-start' }}
-        />
+      <div style={{ display: 'flex', alignItems: 'center', width: 170, justifyContent: 'space-between' }}>
+        {
+          props.collapsed ? 
+            <MenuUnfoldOutlined
+              style={iconStyle}
+              onClick={props.onCollapse}
+            /> : 
+            <MenuFoldOutlined 
+              onClick={props.onCollapse} 
+              style={iconStyle} 
+            />
+        }
+        {isUserCustomer && <Button type="primary" onClick={() => setDrawerVisible(true)}>
+          Create Project
+        </Button>}
       </div>
       <div>
         <Popover placement="bottomRight" content={popoverContent} trigger="click">
-          <UserOutlined className="icons-header" />
+          <UserOutlined style={iconStyle} />
         </Popover>
       </div>
+      <CreateProject 
+        drawerVisible={drawerVisible}
+        setDrawerVisible={setDrawerVisible}
+      />
     </HeaderContainer>
   );
 };

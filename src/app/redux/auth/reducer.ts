@@ -5,14 +5,16 @@ import { IUser, IUsers } from 'app/types';
 export interface IReducerShape {
   user: IUser | null;
   isLoggedIn: boolean;
-  isLoading: boolean;
+  isLoadingUser: boolean;
+  isLoadingUsers: boolean;
   allUsers: IUsers | null;
 }
 
 const initialState: IReducerShape = {
 	user: null,
 	isLoggedIn: false,
-	isLoading: false,
+  isLoadingUser: false,
+  isLoadingUsers: false,
 	allUsers: null,
 };
 
@@ -36,7 +38,7 @@ export const reducer = reducerWithInitialState(initialState)
 		actions.getUser.started,
 		(state): IReducerShape => ({
 			...state,
-			isLoading: true,
+			isLoadingUser: true,
 		})
 	)
 	.case(
@@ -45,21 +47,21 @@ export const reducer = reducerWithInitialState(initialState)
 			...state,
 			user: payload.result,
 			isLoggedIn: true,
-			isLoading: false,
+			isLoadingUser: false,
 		})
 	)
 	.case(
 		actions.getAllUsers.started,
 		(state): IReducerShape => ({
 			...state,
-			isLoading: true,
+			isLoadingUsers: true,
 		})
 	)
 	.case(
 		actions.getAllUsers.done,
 		(state, payload): IReducerShape => ({
 			...state,
-			isLoading: false,
+			isLoadingUsers: false,
 			allUsers: payload.result,
 		})
 	);

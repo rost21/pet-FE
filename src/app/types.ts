@@ -86,6 +86,17 @@ export interface UpdateProjectResponse {
   isUpdated: boolean;
 }
 
+export interface CreateProjectPayload {
+  title: string;
+  description: string;
+  members: string[];
+}
+
+export interface CreateProjectResponse {
+  project: IProject;
+  isCreated: boolean;
+}
+
 export enum ProjectStatuses {
   NOT_PAID = 'NOT_PAID',
   PAID = 'PAID',

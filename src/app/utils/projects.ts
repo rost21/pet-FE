@@ -37,3 +37,5 @@ export const cutString = (string: string, length: number) => {
   }
   return string.substr(0, length) + ' ...';
 };
+
+export const isCustomer = (user: IUser) => user.isCustomer;

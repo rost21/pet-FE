@@ -22,7 +22,7 @@ export const reducer = reducerWithInitialState(initialState)
 			actions.closeProject.started,
 			actions.changeProjectTitle.started,
 			actions.changeProjectDescription.started,
-			actions.deleteUserFromMembers.started
+      actions.deleteUserFromMembers.started,
 		],
 		(state): IReducerShape => ({
 			...state,
@@ -59,12 +59,10 @@ export const reducer = reducerWithInitialState(initialState)
 			project: payload.result,
 			isLoading: false,
 		})
-	)
-	.case(
-		actions.createProject.done,
-		(state, payload): IReducerShape => ({
-			...state,
-			// projects: (payload.result as []),
-			// isLoadingProjects: false,
-		})
-	);
+  )
+  .case(
+    actions.createProject.started,
+    (state): IReducerShape => ({
+      ...state,
+      isLoading: true,
+  }));

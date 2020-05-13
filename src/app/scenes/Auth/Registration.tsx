@@ -2,10 +2,8 @@ import * as React from 'react';
 import { useDispatch } from 'react-redux';
 import * as actions from '../../redux/auth/actions';
 import * as dayjs from 'dayjs';
-import '@ant-design/compatible/assets/index.css';
 import { Input, Button, Checkbox, Form, Select, DatePicker, Row, Col } from 'antd';
 import { LoginFormContainer, FormTitle } from './styled';
-import { FormComponentProps } from '@ant-design/compatible/lib/form';
 import { RouteComponentProps } from 'react-router';
 import ROUTES from 'app/routes';
 import { showNotification } from 'app/utils/notifications';
@@ -35,7 +33,7 @@ const tailFormItemLayout = {
   },
 };
 
-interface IProps extends FormComponentProps, RouteComponentProps {}
+interface IProps extends RouteComponentProps {}
 
 export const RegistrationPage: React.FC<IProps> = props => {
   const dispatch = useDispatch();
