@@ -6,13 +6,6 @@ const { Header, Content } = Layout;
 export const StyledLayout = styled(Layout)`
   min-height: 100vh !important;
   height: 100%;
-
-  .icons-header {
-    svg {
-      width: 25px;
-      height: 25px;
-    }
-  }
 `;
 
 export const StyledHeader = styled(Header)`

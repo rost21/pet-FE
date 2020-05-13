@@ -1,5 +1,6 @@
 import { client } from '../config/apollo';
 import gql from 'graphql-tag';
+import { CreateProjectPayload } from 'app/types';
 
 const GET_PROJECTS = gql`
   query projects {
@@ -9,32 +10,32 @@ const GET_PROJECTS = gql`
       description
       owner {
         id
-        firstname
-        lastname
+        # firstname
+        # lastname
         username
-        email
-        phone
-        dateOfBirth
-        role
-        isCustomer
-        skills
-        rankings
-        about
+        # email
+        # phone
+        # dateOfBirth
+        # role
+        # isCustomer
+        # skills
+        # rankings
+        # about
       }
       status
       members {
         id
-        firstname
-        lastname
+        # firstname
+        # lastname
         username
-        email
-        phone
-        dateOfBirth
-        role
-        isCustomer
-        skills
-        rankings
-        about
+        # email
+        # phone
+        # dateOfBirth
+        # role
+        # isCustomer
+        # skills
+        # rankings
+        # about
       }
       # tasks {
       #   id
@@ -232,6 +233,30 @@ const UPDATE_PROJECT = gql`
   }
 `;
 
+const CREATE_PROJECT = gql`
+  mutation createProject ($data: ProjectPayload!) {
+    createProject (data: $data) {
+      project {
+        id
+        title
+        description
+        owner {
+          id
+          username
+        }
+        status
+        members {
+          id
+          username
+        }
+        startDate
+        endDate
+      }
+      isCreated
+    }
+  }
+`;
+
 export const getProjects = () =>
 	client.query({ query: GET_PROJECTS });
 
@@ -239,4 +264,7 @@ export const getProject = (id: string) =>
 	client.query({ query: GET_PROJECT, variables: { id } });
 
 export const updateProject = (id: string, data: any) =>
-	client.query({ query: UPDATE_PROJECT, variables: { id, data }});
+  client.mutate({ mutation: UPDATE_PROJECT, variables: { id, data }});
+
+export const createProject = (data: CreateProjectPayload) =>
+  client.mutate({ mutation: CREATE_PROJECT, variables: { data } });

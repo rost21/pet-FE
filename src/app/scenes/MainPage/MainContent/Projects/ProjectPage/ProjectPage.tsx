@@ -14,7 +14,6 @@ import { Spin, Button, Modal, List, Input } from 'antd';
 import * as s from '../styled';
 import ROUTES from 'app/routes';
 import { IUsers, IUser } from 'app/types';
-import { getAllUsers } from 'app/redux/auth/actions';
 import { ExclamationCircleOutlined, CloseOutlined } from '@ant-design/icons';
 import { Editable } from 'app/components/Editable';
 import { isUserOwnerProject, isProjectClosed } from 'app/utils/projects';
@@ -43,7 +42,6 @@ export const ProjectPage: React.FC<IProps> = props => {
 
   React.useEffect(() => {
       dispatch(getSingleProject.started(id));
-      dispatch(getAllUsers.started({}));
       // component will unmount
       return () => {
         dispatch(getSingleProject.done({

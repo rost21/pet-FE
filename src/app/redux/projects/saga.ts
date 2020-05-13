@@ -2,9 +2,10 @@ import { takeLatest, call, put, select } from 'redux-saga/effects';
 import * as dayjs from 'dayjs';
 import * as utc from 'dayjs/plugin/utc';
 import * as actions from './actions';
-import { getProjects, getProject, updateProject } from 'app/graphql/project';
-import { IProjects, IProject, UpdateProjectResponse } from 'app/types';
+import { getProjects, getProject, updateProject, createProject } from 'app/graphql/project';
+import { IProjects, IProject, UpdateProjectResponse, CreateProjectResponse, IUser } from 'app/types';
 import { IRootReducer } from '../rootReducer';
+import { showNotification } from 'app/utils/notifications';
 
 function* getAllProjects() {
   try {
@@ -26,7 +27,7 @@ function* getAllProjects() {
 function* getSingleProject(action: ReturnType<typeof actions.getSingleProject.started>) {
   try {
     const id = action.payload;
-    const { data: { getProject: response } }: { data: { getProject: IProject }} = yield call(getProject, id);
+    const { data: { getProject: response } }: { data: { getProject: IProject } } = yield call(getProject, id);
 
     if (!response) {
       return;
@@ -69,6 +70,8 @@ function* closeProject(action: ReturnType<typeof actions.closeProject.started>) 
       params: id,
       result: updatedProject,
     }));
+
+    yield showNotification('Project closed', 'success');
   } catch (e) {
     console.log(e);
     yield put(actions.closeProject.failed({
@@ -127,6 +130,8 @@ function* changeProjectTitle(action: ReturnType<typeof actions.changeProjectTitl
       params: project.id,
       result: updatedProject,
     }));
+
+    yield showNotification('Title updated', 'success');
   } catch (e) {
     console.log(e);
     yield put(actions.changeProjectTitle.failed({
@@ -158,6 +163,8 @@ function* changeProjectDescription(action: ReturnType<typeof actions.changeProje
       params: project.id,
       result: updatedProject,
     }));
+
+    yield showNotification('Description updated', 'success');
   } catch (e) {
     console.log(e);
     yield put(actions.changeProjectTitle.failed({
@@ -184,9 +191,43 @@ function* deleteUserFromMembers(action: ReturnType<typeof actions.deleteUserFrom
       params: project.id,
       result: response.project,
     }));
+
+    yield showNotification('Member deleted', 'success');
   } catch (e) {
     console.log(e);
     yield put(actions.changeProjectTitle.failed({
+      params: action.payload,
+      error: e,
+    }));
+  }
+}
+
+function* createNewProject(action: ReturnType<typeof actions.createProject.started>) {
+  try {
+    const { title, description, members } = action.payload;
+    const user: IUser = yield select((state: IRootReducer) => state.auth.user);
+    const projects: IProjects = yield select((state: IRootReducer) => state.project.allProjects);
+
+    const now = dayjs.extend(utc).utc().valueOf();
+    
+    const payload = { title, description, members, status: 'NOT PAID', owner: user.id, startDate: `${now}` };
+    const { data: { createProject: response } }: { data: { createProject: CreateProjectResponse } } = yield call(createProject, payload);
+    
+    if (!response.isCreated) {
+      return;
+    }
+
+    const updatedProjects = [...projects, response.project];
+
+    yield put(actions.getAllProjects.done({
+      params: '',
+      result: updatedProjects,
+    }));
+
+    yield showNotification(`Project ${title} created`, 'success');
+  } catch (e) {
+    console.log(e);
+    yield put(actions.createProject.failed({
       params: action.payload,
       error: e,
     }));
@@ -217,4 +258,5 @@ export function* saga() {
   yield takeLatest(actions.changeProjectTitle.started, changeProjectTitle);
   yield takeLatest(actions.changeProjectDescription.started, changeProjectDescription);
   yield takeLatest(actions.deleteUserFromMembers.started, deleteUserFromMembers);
+  yield takeLatest(actions.createProject.started, createNewProject);
 }
