@@ -1,14 +1,17 @@
 import * as React from 'react';
-// @ts-ignore
-import Kanban from 'react-trello';
+import { KanbanBoard } from './styled';
 import { RouteComponentProps } from 'react-router';
-import { getSingleProject } from 'app/redux/projects/actions';
+import { getSingleProject } from 'app/redux/project/actions';
 import { useDispatch, useSelector } from 'react-redux';
 import { IRootReducer } from 'app/redux/rootReducer';
-import { Spin, Card } from 'antd';
+import { Spin, Card, Button, Avatar, Tooltip } from 'antd';
 import { ProjectContainer, NotFoundMessage, Title } from '../styled';
 import ROUTES from 'app/routes';
 import { ITask } from 'app/types';
+import { CreateTask } from './CreateTask';
+import { Task } from './Task';
+import { isUserOwnerProject, cutString } from 'app/utils/project';
+import { updateTask, setTaskModalVisible } from 'app/redux/task/actions';
 
 const data = {
   lanes: [
@@ -16,7 +19,7 @@ const data = {
       id: 'ready',
       title: 'Dev Ready',
       style: {
-        width: 350,
+        width: '24%',
         margin: '0px 8px 0px 0px',
       },
       cards: [] as ITask[],
@@ -25,7 +28,7 @@ const data = {
       id: 'wip',
       title: 'Work In Progress',
       style: {
-        width: 350,
+        width: '24%',
         margin: '0px 8px 0px 0px',
       },
       cards: [] as ITask[],
@@ -34,7 +37,7 @@ const data = {
       id: 'done',
       title: 'Done',
       style: {
-        width: 350,
+        width: '24%',
         margin: '0px 8px 0px 0px',
       },
       cards: [] as ITask[],
@@ -43,27 +46,12 @@ const data = {
       id: 'closed',
       title: 'Verified & Closed',
       style: {
-        width: 350,
+        width: '24%',
         margin: '0px 8px 0px 0px',
       },
       cards: [] as ITask[],
     },
   ],
-};
-
-const MyCard = (props: any) => {
-  return (
-    <Card
-      title={props.title}
-      style={{ width: 320, marginBottom: 16 }}
-      extra={props.type.toUpperCase()}
-    >
-      <div style={{ display: 'flex' }}>
-        <div style={{ whiteSpace: 'pre-line', width: '75%' }}>{props.description}</div>
-        <div>AVATAR</div>
-      </div>
-    </Card>
-  );
 };
 
 interface IProps extends RouteComponentProps<{ id: string }> {}
@@ -73,8 +61,11 @@ export const Board: React.FC<IProps> = props => {
   const { id } = props.match.params;
 
   const [tasks, setTasks] = React.useState(data);
-
-  const { project, isLoading } = useSelector((state: IRootReducer) => state.project);
+  const [drawerVisible, setDrawerVisible] = React.useState(false);
+  
+  const { project, isLoading } = useSelector((state: IRootReducer) => state.projectsReducer);
+  const { selectedTaskId } = useSelector((state: IRootReducer) => state.tasksReducer);
+  const { user } = useSelector((state: IRootReducer) => state.authReducer);
 
   React.useEffect(() => {
     dispatch(getSingleProject.started(id));
@@ -91,7 +82,7 @@ export const Board: React.FC<IProps> = props => {
 
   React.useEffect(() => {
     if (project) {
-      const newData = {
+      const tasks = {
         ...data,
         lanes: data.lanes.map(item => ({
           ...item,
@@ -104,23 +95,45 @@ export const Board: React.FC<IProps> = props => {
         })),
       };
 
-      // console.log(newData);
-      setTasks(newData);
+      setTasks(tasks);
     }
   }, [project]);
 
-  const handleEndDrag = (
-    cardId: any,
-    sourceLaneId: any,
-    targetLaneId: any,
-    position: any,
-    cardDetails: any
-  ) => {
-    console.log('cardId: ', cardId);
-    console.log('sourceLaneId: ', sourceLaneId);
-    console.log('targetLaneId: ', targetLaneId);
-    console.log('position: ', position);
-    console.log('cardDetails: ', cardDetails);
+  const isOwner = React.useMemo(() => project && isUserOwnerProject(user!, project!), [user, project]);
+
+  const handleEndDrag = (cardId: string, sourceLaneId: string, targetLaneId: string) => {
+    if (sourceLaneId === targetLaneId) {
+      return;
+    }
+
+    dispatch(updateTask.started({ id: cardId, payload: { status: targetLaneId } }));
+  };
+
+  const renderCard = (task: ITask) => {
+    const { id = '', title = '', type = '', description = '', assignTo } = task;
+
+    return (
+      <Card
+        key={id}
+        title={title}
+        style={{ marginBottom: 2 }}
+        extra={type.toUpperCase()}
+        onClick={() => dispatch(setTaskModalVisible({ visible: true, id }))}
+      >
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div style={{ whiteSpace: 'pre-line', wordBreak: 'break-all', maxWidth: '83%' }}>
+            {cutString(description, 250)}
+          </div>
+          {!!assignTo && 
+            <Tooltip title={assignTo.firstname + ' ' + assignTo.lastname}>
+              <Avatar>
+                {(assignTo.firstname && (assignTo.firstname[0].toUpperCase() + '' + assignTo.lastname[0].toUpperCase())) || assignTo.username[0].toUpperCase()}
+              </Avatar>
+            </Tooltip>
+          }
+        </div>
+      </Card>
+    );
   };
 
   return (
@@ -136,25 +149,23 @@ export const Board: React.FC<IProps> = props => {
             </Title>
             <Title>Board</Title>
             <div />
-            <div />
+            {isOwner ? <Button onClick={() => setDrawerVisible(true)}>
+              Create task
+            </Button> : <div />}
           </div>
-          <Kanban
+          <KanbanBoard
             data={tasks}
-            // draggable
             laneDraggable={false}
             cardDraggable
-            //editable
             cardDragClass="draggingCard"
-            //laneDragClass="draggingLane"
-            style={{
-              backgroundColor: 'inherit',
-              maxHeight: 'calc(100% - 64px)',
-              overflowY: 'auto',
-              padding: '8px 0px 0px 0px',
-            }}
             handleDragEnd={handleEndDrag}
-            components={{ Card: MyCard }}
+            components={{ Card: renderCard }}
           />
+          <CreateTask 
+            drawerVisible={drawerVisible} 
+            setDrawerVisible={setDrawerVisible} 
+          />
+          {selectedTaskId && <Task />}
         </div>
       ) : (
         <ProjectContainer>

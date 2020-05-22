@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { IProject } from 'app/types';
 import { ProjectCardStyled } from './styled';
-import { cutString } from 'app/utils/projects';
+import { cutString } from 'app/utils/project';
 // import ROUTES from '../../../../routes';
 
 interface IProps {

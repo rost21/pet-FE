@@ -8,7 +8,7 @@ import {
   changeProjectTitle,
   changeProjectDescription,
   deleteUserFromMembers
-} from 'app/redux/projects/actions';
+} from 'app/redux/project/actions';
 import { IRootReducer } from 'app/redux/rootReducer';
 import { Spin, Button, Modal, List, Input } from 'antd';
 import * as s from '../styled';
@@ -16,9 +16,10 @@ import ROUTES from 'app/routes';
 import { IUsers, IUser } from 'app/types';
 import { ExclamationCircleOutlined, CloseOutlined } from '@ant-design/icons';
 import { Editable } from 'app/components/Editable';
-import { isUserOwnerProject, isProjectClosed } from 'app/utils/projects';
+import { isUserOwnerProject, isProjectClosed, isUserMemberProject } from 'app/utils/project';
 import { AddMembers } from './AddMembers';
 import { Item } from './styled';
+import { formattingDescription } from 'app/utils/task';
 
 interface IProps extends RouteComponentProps<{ id: string }> {}
 
@@ -32,8 +33,8 @@ export const ProjectPage: React.FC<IProps> = props => {
   const descriptionRef = React.useRef(null);
   const { id } = props.match.params;
 
-  const { project, isLoading } = useSelector((state: IRootReducer) => state.project);
-  const { user } = useSelector((state: IRootReducer) => state.auth);
+  const { project, isLoading } = useSelector((state: IRootReducer) => state.projectsReducer);
+  const { user } = useSelector((state: IRootReducer) => state.authReducer);
 
   const [drawerVisible, setDrawerVisible] = React.useState(false);
   const [stepsVisible, setStepsVisible] = React.useState(false);
@@ -58,6 +59,7 @@ export const ProjectPage: React.FC<IProps> = props => {
   }, [project]);
 
   const isUserOwner = React.useMemo(() => !!user && !!project && isUserOwnerProject(user, project), [user, project]);
+  const isMember = React.useMemo(() => !!user && !!project && isUserMemberProject(user!, project!), [user, project]);
 
   const renderStatus = (status: string) => {
     switch (status) {
@@ -147,8 +149,13 @@ export const ProjectPage: React.FC<IProps> = props => {
                     canEdit={isUserOwner && !isProjectClosed(project)}
                     text={
                       <span 
-                        style={{ overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', maxWidth: 300, display: 'block' }}
-                        title={title}
+                        style={{ 
+                          overflow: 'hidden', 
+                          whiteSpace: 'nowrap', 
+                          textOverflow: 'ellipsis', 
+                          maxWidth: 300, 
+                          display: 'block' 
+                        }}
                       >
                         {title}
                       </span> 
@@ -172,7 +179,12 @@ export const ProjectPage: React.FC<IProps> = props => {
                 </s.Title>
                 {renderStatus(project.status)}
               </div>
-              <Button type="primary" onClick={() => props.history.push(`/main/projects/${project.id}/board`)}>View Board</Button>
+              {(isUserOwner || isMember) && <Button
+                type="primary"
+                onClick={() => props.history.push(`/main/projects/${project.id}/board`)}
+              >
+                View Board
+              </Button>}
               {
                 isUserOwner && !isProjectClosed(project) ?
                 <Button type="default" style={{ color: 'red', border: '1px solid red' }} onClick={onCloseProject}>
@@ -190,12 +202,7 @@ export const ProjectPage: React.FC<IProps> = props => {
                   <s.DescriptionBody title={project.description}>
                     <Editable
                       canEdit={isUserOwner && !isProjectClosed(project)}
-                      text={
-                        project.description ?
-                        <h3 style={{ fontWeight: 'normal' }} title={description}>
-                          {description}
-                        </h3> : null
-                      }
+                      text={formattingDescription(description)}
                       type="textarea"
                       placeholder="Start enter description"
                       childRef={descriptionRef}

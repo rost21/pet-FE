@@ -9,7 +9,7 @@ export const Container = styled.div`
 `;
 
 export const Title = styled.h2`
-  font-size: 30px;
+  font-size: 24px;
   margin: 0;
 `;
 
@@ -80,6 +80,7 @@ export const DescriptionBody = styled.span`
   max-height: 100px;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 100%;
 `;
 
 export const User = styled.div`

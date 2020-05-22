@@ -7,8 +7,8 @@ import { IUser } from 'app/types';
 import { IUserExtend } from './ProjectPage';
 import { useSelector, useDispatch } from 'react-redux';
 import { IRootReducer } from 'app/redux/rootReducer';
-import { getDevelopersNotInProject } from 'app/utils/projects';
-import { addMembersToProject } from 'app/redux/projects/actions';
+import { getDevelopersNotInProject } from 'app/utils/project';
+import { addMembersToProject } from 'app/redux/project/actions';
 
 interface IProps {
   drawerVisible: boolean;
@@ -17,8 +17,8 @@ interface IProps {
 
 export const AddMembers: React.FC<IProps> = props => {
   const dispatch = useDispatch();
-  const { project } = useSelector((state: IRootReducer) => state.project);
-  const { allUsers: users } = useSelector((state: IRootReducer) => state.auth);
+  const { project } = useSelector((state: IRootReducer) => state.projectsReducer);
+  const { allUsers: users } = useSelector((state: IRootReducer) => state.authReducer);
   const [allDevelopers, setAllDevelopers] = React.useState<IUserExtend[]>([]);
 
   const developers = React.useMemo(() => 

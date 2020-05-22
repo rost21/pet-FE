@@ -1,6 +1,7 @@
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
 import * as actions from './actions';
 import { IProjects, IProject } from 'app/types';
+import { createTask, updateTask } from '../task/actions';
 
 export interface IReducerShape {
   allProjects: IProjects;
@@ -11,7 +12,7 @@ export interface IReducerShape {
 const initialState: IReducerShape = {
 	allProjects: [],
 	isLoading: false,
-	project: null,
+  project: null,
 };
 
 export const reducer = reducerWithInitialState(initialState)
@@ -65,4 +66,19 @@ export const reducer = reducerWithInitialState(initialState)
     (state): IReducerShape => ({
       ...state,
       isLoading: true,
-  }));
+    })
+  )
+  .case(
+    createTask.started,
+    (state): IReducerShape => ({
+      ...state,
+      isLoading: true,
+    })
+  )
+  .case(
+    updateTask.started,
+    (state): IReducerShape => ({
+      ...state,
+      isLoading: true,
+    })
+  );

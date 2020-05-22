@@ -21,6 +21,10 @@ export const isUserOwnerProject = (user: IUser, project: IProject) => {
   return user.id === project.owner.id;
 };
 
+export const isUserMemberProject = (user: IUser, project: IProject) => {
+  return project.members.some(member => member.id === user.id);
+};
+
 export const getDevelopersNotInProject = (allDevelopers: IUserExtend[], project: IProject) => {
   if (!allDevelopers || !project) {
     return null;
@@ -35,7 +39,10 @@ export const cutString = (string: string, length: number) => {
   if (!string) {
     return null;
   }
-  return string.substr(0, length) + ' ...';
+  if (string.length > length) {
+    return string.substr(0, length) + ' ...';
+  }
+  return string;
 };
 
 export const isCustomer = (user: IUser) => user.isCustomer;
