@@ -1,7 +1,7 @@
 import { actionCreatorFactory } from 'typescript-fsa';
 import { IProjects, IProject, UpdateProjectResponse, CreateProjectPayload } from 'app/types';
 
-const actionCreator = actionCreatorFactory('auth');
+const actionCreator = actionCreatorFactory('project');
 
 export const getAllProjects = actionCreator.async<string, IProjects, string>('GET_ALL_PROJECTS');
 

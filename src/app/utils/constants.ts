@@ -3,3 +3,5 @@ export const PROGRAMMING_LANGUAGES = [
   'PHP', 'Haskell', 'Fortran', 'Objective-C', 'Visual Basic', 'Scala',
   'Ruby', 'SQL', 'Swift', 'Go', '.NET', 'Delphi', 'Lua', 'Kotlin'
 ];
+
+export const ALL_TYPES = ['Bug', 'Story', 'Improvement'];

@@ -14,7 +14,7 @@ import ROUTES from '../../../routes';
 import { logout } from '../../../redux/auth/actions';
 import { CreateProject } from './CreateProject';
 import { IRootReducer } from 'app/redux/rootReducer';
-import { isCustomer } from 'app/utils/projects';
+import { isCustomer } from 'app/utils/project';
 
 interface IProps {
   collapsed: boolean;
@@ -24,7 +24,7 @@ interface IProps {
 
 export const Header: React.FC<IProps> = props => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state: IRootReducer) => state.auth);
+  const { user } = useSelector((state: IRootReducer) => state.authReducer);
   const [drawerVisible, setDrawerVisible] = React.useState(false);
 
   const isUserCustomer = React.useMemo(() => user && isCustomer(user!), [user]);

@@ -8,7 +8,7 @@ import { IUserExtend } from '../MainContent/Projects/ProjectPage/ProjectPage';
 import { useSelector, useDispatch} from 'react-redux';
 import { IRootReducer } from 'app/redux/rootReducer';
 import { PROGRAMMING_LANGUAGES } from 'app/utils/constants';
-import { createProject } from 'app/redux/projects/actions';
+import { createProject } from 'app/redux/project/actions';
 
 interface IProps {
   drawerVisible: boolean;
@@ -18,7 +18,7 @@ interface IProps {
 export const CreateProject: React.FC<IProps> = props => {
   const dispatch = useDispatch();
   const [form] = Form.useForm();
-  const { allUsers } = useSelector((state: IRootReducer) => state.auth);
+  const { allUsers } = useSelector((state: IRootReducer) => state.authReducer);
   const [allDevelopers, setAllDevelopers] = React.useState<IUserExtend[]>([]);
 
   const developers = React.useMemo(() => 
@@ -73,9 +73,12 @@ export const CreateProject: React.FC<IProps> = props => {
     setAllDevelopers(updatedDevelopers);
   };
 
-  const onFinish = () => {
-    form.validateFields();
-    const { title, description } = (form.getFieldsValue() as { title: string, description: string});
+  const onFinish = async () => {
+    const values = await form.validateFields();
+    if (!values) {
+      return;
+    }
+    const { title, description } = values;
     const membersIds = allDevelopers.filter(dev => dev.isSelected).map(dev => dev.id);
     props.setDrawerVisible(false);
     dispatch(createProject.started({ title, description, members: membersIds }));

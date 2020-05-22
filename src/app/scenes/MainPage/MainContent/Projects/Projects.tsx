@@ -16,14 +16,14 @@ import { IProjects } from 'app/types';
 import { 
   // findProjects,
   // changeViewProjects
-} from 'app/utils/projects';
+} from 'app/utils/project';
 
 interface IProps extends RouteComponentProps {}
 
 export const Projects: React.FC<IProps> = props => {
   // const dispatch = useDispatch();
-  const { allProjects: projects } = useSelector((state: IRootReducer) => state.project);
-  const { user } = useSelector((state: IRootReducer) => state.auth);
+  const { allProjects: projects } = useSelector((state: IRootReducer) => state.projectsReducer);
+  const { user } = useSelector((state: IRootReducer) => state.authReducer);
   const [stateProjects, setProjects] = React.useState<IProjects>([]);
   const [search, setSearch] = React.useState('');
   const [typeOfProjects, setTypeOfProjects] = React.useState('all');

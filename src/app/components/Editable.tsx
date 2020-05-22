@@ -1,13 +1,14 @@
 import * as React from 'react';
+import { EditableWrapper } from './styled';
 
 interface IProps {
   text: any;
-  type: 'input' | 'textarea';
-  placeholder: string;
+  type: 'input' | 'textarea' | 'select';
+  placeholder?: string;
   children: React.ReactNode;
-  canEdit: boolean;
+  canEdit?: boolean;
   onEndEditing?: () => void;
-  childRef: any;
+  childRef: React.MutableRefObject<any>;
 }
 
 export const Editable: React.FC<IProps> = ({
@@ -16,10 +17,11 @@ export const Editable: React.FC<IProps> = ({
   placeholder,
   children,
   onEndEditing,
-  canEdit,
+  canEdit = true,
   childRef,
   ...props
 }) => {
+
   const [isEditing, setEditing] = React.useState(false);
 
   React.useEffect(() => {
@@ -28,7 +30,7 @@ export const Editable: React.FC<IProps> = ({
     }
   }, [isEditing, childRef]);
 
-  const handleKeyDown = (event: any, type: any) => {
+  const handleKeyDown = (event: any, type: IProps['type']) => {
     const { key } = event;
     const keys = ['Escape', 'Tab'];
     const enterKey = 'Enter';
@@ -43,12 +45,12 @@ export const Editable: React.FC<IProps> = ({
   };
 
   return (
-    <div {...props}>
+    <EditableWrapper isEditing={isEditing} canEdit={canEdit} {...props}>
       {isEditing && canEdit ? (
         <div
-          onBlur={() => { 
+          onBlur={() => {
             setEditing(false);
-            onEndEditing!();
+            type !== 'select' && onEndEditing!();
           }}
           onKeyDown={e => handleKeyDown(e, type)}
         >
@@ -59,6 +61,6 @@ export const Editable: React.FC<IProps> = ({
             {text || placeholder || 'Editable content'}
         </span>
       )}
-    </div>
+    </EditableWrapper>
   );
 };

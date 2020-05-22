@@ -7,17 +7,19 @@ import { Header } from './Header/Header';
 import { ContentRouter } from './MainContent/Content';
 import ROUTES from 'app/routes';
 import { getUser, getAllUsers } from 'app/redux/auth/actions';
-import { getAllProjects } from 'app/redux/projects/actions';
-import { IProps } from './types';
+import { getAllProjects } from 'app/redux/project/actions';
 import { IRootReducer } from 'app/redux/rootReducer';
+import { RouteComponentProps } from 'react-router';
 
 const { Sider } = Layout;
+
+interface IProps extends RouteComponentProps {}
 
 export const MainPage: React.FC<IProps> = props => {
   const [collapsed, setCollapsed] = React.useState(false);
   const dispatch = useDispatch();
-  const { isLoggedIn, isLoadingUser, isLoadingUsers } = useSelector((state: IRootReducer) => state.auth);
-  const { isLoading: isLoadingProjects } = useSelector((state: IRootReducer) => state.project);
+  const { isLoggedIn, isLoadingUser, isLoadingUsers } = useSelector((state: IRootReducer) => state.authReducer);
+  const { isLoading: isLoadingProjects } = useSelector((state: IRootReducer) => state.projectsReducer);
 
   const isFetching = isLoadingUser || isLoadingUsers || isLoadingProjects;
   

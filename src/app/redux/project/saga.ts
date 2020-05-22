@@ -48,7 +48,7 @@ function* getSingleProject(action: ReturnType<typeof actions.getSingleProject.st
 
 function* closeProject(action: ReturnType<typeof actions.closeProject.started>) {
   try {
-    const project: IProject = yield select((state: IRootReducer) => state.project.project);
+    const project: IProject = yield select((state: IRootReducer) => state.projectsReducer.project);
     const id = action.payload;
 
     const now = dayjs.extend(utc).utc().valueOf();
@@ -84,7 +84,7 @@ function* closeProject(action: ReturnType<typeof actions.closeProject.started>) 
 function* addMembersToProject(action: ReturnType<typeof actions.addMembersToProject.started>) {
   try {
     const ids = action.payload;
-    const project: IProject = yield select((state: IRootReducer) => state.project.project);
+    const project: IProject = yield select((state: IRootReducer) => state.projectsReducer.project);
     const membersIds = project.members.map(member => member.id);
 
     const payload = { members: [...new Set([...membersIds, ...ids])] };
@@ -111,7 +111,7 @@ function* addMembersToProject(action: ReturnType<typeof actions.addMembersToProj
 function* changeProjectTitle(action: ReturnType<typeof actions.changeProjectTitle.started>) {
   try {
     const changedTitle = action.payload;
-    const project: IProject = yield select((state: IRootReducer) => state.project.project);
+    const project: IProject = yield select((state: IRootReducer) => state.projectsReducer.project);
 
     const payload = { title: changedTitle };
     
@@ -144,7 +144,7 @@ function* changeProjectTitle(action: ReturnType<typeof actions.changeProjectTitl
 function* changeProjectDescription(action: ReturnType<typeof actions.changeProjectDescription.started>) {
   try {
     const changedDescription = action.payload;
-    const project: IProject = yield select((state: IRootReducer) => state.project.project);
+    const project: IProject = yield select((state: IRootReducer) => state.projectsReducer.project);
 
     const payload = { description: changedDescription };
     
@@ -177,7 +177,7 @@ function* changeProjectDescription(action: ReturnType<typeof actions.changeProje
 function* deleteUserFromMembers(action: ReturnType<typeof actions.deleteUserFromMembers.started>) {
   try {
     const id = action.payload;
-    const project: IProject = yield select((state: IRootReducer) => state.project.project);
+    const project: IProject = yield select((state: IRootReducer) => state.projectsReducer.project);
     const membersIds = project.members.map(member => member.id);
 
     const payload = { members: membersIds.filter(member => member !== id) };
@@ -205,12 +205,20 @@ function* deleteUserFromMembers(action: ReturnType<typeof actions.deleteUserFrom
 function* createNewProject(action: ReturnType<typeof actions.createProject.started>) {
   try {
     const { title, description, members } = action.payload;
-    const user: IUser = yield select((state: IRootReducer) => state.auth.user);
-    const projects: IProjects = yield select((state: IRootReducer) => state.project.allProjects);
+    const user: IUser = yield select((state: IRootReducer) => state.authReducer.user);
+    const projects: IProjects = yield select((state: IRootReducer) => state.projectsReducer.allProjects);
 
     const now = dayjs.extend(utc).utc().valueOf();
     
-    const payload = { title, description, members, status: 'NOT PAID', owner: user.id, startDate: `${now}` };
+    const payload = { 
+      title, 
+      description, 
+      members, 
+      status: 'NOT PAID', 
+      owner: user.id, 
+      startDate: `${now}`
+    };
+
     const { data: { createProject: response } }: { data: { createProject: CreateProjectResponse } } = yield call(createProject, payload);
     
     if (!response.isCreated) {

@@ -10,68 +10,17 @@ const GET_PROJECTS = gql`
       description
       owner {
         id
-        # firstname
-        # lastname
+        firstname
+        lastname
         username
-        # email
-        # phone
-        # dateOfBirth
-        # role
-        # isCustomer
-        # skills
-        # rankings
-        # about
       }
       status
       members {
         id
-        # firstname
-        # lastname
+        firstname
+        lastname
         username
-        # email
-        # phone
-        # dateOfBirth
-        # role
-        # isCustomer
-        # skills
-        # rankings
-        # about
       }
-      # tasks {
-      #   id
-      #   title
-      #   description
-      #   type
-      #   reporter {
-      #     id
-      #     firstname
-      #     lastname
-      #     username
-      #     email
-      #     phone
-      #     dateOfBirth
-      #     role
-      #     isCustomer
-      #     skills
-      #     rankings
-      #     about
-      #   }
-      #   assignTo {
-      #     id
-      #     firstname
-      #     lastname
-      #     username
-      #     email
-      #     phone
-      #     dateOfBirth
-      #     role
-      #     isCustomer
-      #     skills
-      #     rankings
-      #     about
-      #   }
-      #   status
-      # }
       startDate
       endDate
     }
@@ -147,6 +96,16 @@ const GET_PROJECT = gql`
           about
         }
         status
+        comments {
+          id
+          comment
+          author {
+            id
+            username
+            firstname
+            lastname
+          }
+        }
       }
       startDate
       endDate
@@ -234,7 +193,7 @@ const UPDATE_PROJECT = gql`
 `;
 
 const CREATE_PROJECT = gql`
-  mutation createProject ($data: ProjectPayload!) {
+  mutation createProject ($data: CreateProjectPayload!) {
     createProject (data: $data) {
       project {
         id

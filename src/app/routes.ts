@@ -7,5 +7,6 @@ export default {
   PROJECT: '/main/projects/:id',
   PROFILE: '/main/profile',
   PROJECT_BOARD: '/main/projects/:id/board',
+  TASK: '/main/projects/:id/task/:id',
   ANY: '*'
 };

@@ -5,6 +5,7 @@ import { Profile } from './Profile/Profile';
 import { Projects } from './Projects/Projects';
 import { ProjectPage } from './Projects/ProjectPage/ProjectPage';
 import { Board } from './Projects/Board/Board';
+// import { Task } from './Projects/Board/Task';
 
 export const ContentRouter = () => {
   return (
@@ -14,6 +15,7 @@ export const ContentRouter = () => {
       <Route exact path={ROUTES.PROJECT} component={ProjectPage} />
       <Route path={ROUTES.PROFILE} component={Profile} />
       <Route path={ROUTES.PROJECT_BOARD} component={Board} />
+      {/* <Route path={ROUTES.TASK} component={Task} /> */}
     </Switch>
   );
 };

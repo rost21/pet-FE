@@ -63,6 +63,9 @@ export interface ITask {
   reporter: IUser;
   assignTo: IUser;
   status: 'ready' | 'wip' | 'done' | 'closed';
+  creationDate: string;
+  closedDate?: string;
+  comments: IComment[];
 }
 
 export type ITasks = ITask[]
@@ -101,4 +104,48 @@ export enum ProjectStatuses {
   NOT_PAID = 'NOT_PAID',
   PAID = 'PAID',
   CLOSED = 'CLOSED'
+}
+
+export interface CreateTaskPayload {
+  title: string;
+  description: string;
+  type: string;
+  reporter: string;
+  assignTo: string;
+  status: string;
+  creationDate: string;
+}
+
+export interface CreateTaskResponse {
+  task: ITask;
+  isCreated: boolean;
+}
+
+type TaskFields = 'title' | 'description' | 'type' | 'assignTo' | 'status';
+
+export type UpdateTaskPayload = {
+  [key in TaskFields]?: string;
+};
+
+export interface IComment {
+  id: string;
+  comment: string;
+  author: IUser;
+  postedDate: string;
+}
+
+export interface UpdateTaskResponse {
+  task: ITask;
+  isUpdated: boolean;
+}
+
+export interface CreateCommentPayload {
+  comment: string;
+  author: string;
+  postedDate: string;
+}
+
+export interface CreateCommentResponse {
+  comment: IComment;
+  isCreated: boolean;
 }
