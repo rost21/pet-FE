@@ -2,7 +2,6 @@ import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
 import {
   useSelector
-  // useDispatch
 } from 'react-redux';
 import { Container, Title, ProjectsContainer, ProjectsHeader } from './styled';
 import { IRootReducer } from 'app/redux/rootReducer';
@@ -10,18 +9,12 @@ import { ProjectCard } from './ProjectCard';
 import { Input,
   Spin, Select
 } from 'antd';
-// import { SearchOutlined } from '@ant-design/icons';
 import { debounce } from 'app/utils/common';
 import { IProjects } from 'app/types';
-import { 
-  // findProjects,
-  // changeViewProjects
-} from 'app/utils/project';
 
 interface IProps extends RouteComponentProps {}
 
 export const Projects: React.FC<IProps> = props => {
-  // const dispatch = useDispatch();
   const { allProjects: projects } = useSelector((state: IRootReducer) => state.projectsReducer);
   const { user } = useSelector((state: IRootReducer) => state.authReducer);
   const [stateProjects, setProjects] = React.useState<IProjects>([]);

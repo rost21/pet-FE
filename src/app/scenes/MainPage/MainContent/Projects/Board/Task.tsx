@@ -15,23 +15,27 @@ import { ITask, IComment } from 'app/types';
 import { PopoverRow } from 'app/scenes/MainPage/Header/styled';
 import { ALL_TYPES } from 'app/utils/constants';
 import { UserOutlined } from '@ant-design/icons';
-import { formattingDescription } from 'app/utils/task';
+import { formattingByNewLine } from 'app/utils/task';
+import { generateColor } from 'app/utils/common';
 
-const CommentList = ({ comments }: { comments: IComment[] }) => (
-  <List
-    dataSource={comments}
-    header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
-    itemLayout="horizontal"
-    renderItem={props => 
-      <Comment 
-        key={props.id}
-        content={<p>{props.comment}</p>} 
-        author={props.author.firstname + ' ' + props.author.lastname}
-        datetime={dayjs(+props.postedDate).format('DD MMM YYYY, HH:mm')}
-        avatar={<Avatar>{props.author.firstname[0].toUpperCase() + '' + props.author.lastname[0].toUpperCase()}</Avatar>}
-      />}
-  />
-);
+const CommentList = ({ comments }: { comments: IComment[] }) => {
+  const color = generateColor();
+  return (
+    <List
+      dataSource={comments}
+      header={`${comments.length} ${comments.length > 1 ? 'replies' : 'reply'}`}
+      itemLayout="horizontal"
+      renderItem={props => 
+        <Comment 
+          key={props.id}
+          content={<p>{props.comment}</p>} 
+          author={props.author.firstname + ' ' + props.author.lastname}
+          datetime={dayjs(+props.postedDate).format('DD MMM YYYY, HH:mm')}
+          avatar={<Avatar style={{ backgroundColor: color }}>{props.author.firstname[0].toUpperCase() + '' + props.author.lastname[0].toUpperCase()}</Avatar>}
+        />}
+    />
+  );
+};
 
 interface IEditorProps {
   value: string;
@@ -181,7 +185,9 @@ export const Task = () => {
           </Tooltip>
         </Popover>}
     </div>;
-  
+
+  const color = React.useMemo(() => generateColor(), [project]);
+
   return (
     <Modal
       visible={isTaskModalVisible}
@@ -227,7 +233,7 @@ export const Task = () => {
                   <DescriptionBody title={task.description}>
                     <Editable
                       canEdit={isOwner!}
-                      text={formattingDescription(task.description)}
+                      text={formattingByNewLine(task.description)}
                       type="textarea"
                       placeholder="Start enter description"
                       childRef={descriptionRef}
@@ -275,7 +281,9 @@ export const Task = () => {
                       text={
                         <div style={{ padding: '8px 0', fontSize: 15 }}>
                           {task.assignTo ? 
-                            <Avatar>{task.assignTo!.firstname[0].toUpperCase() + '' + task.assignTo!.lastname[0].toUpperCase()}</Avatar> : 
+                            <Avatar>
+                              {task.assignTo!.firstname[0].toUpperCase() + '' + task.assignTo!.lastname[0].toUpperCase()}
+                            </Avatar> : 
                             <Avatar icon={<UserOutlined />} /> 
                           }
                           {task.assignTo ? 
@@ -302,7 +310,9 @@ export const Task = () => {
                               disabled={task.assignTo && task.assignTo.id === member.id}
                             >
                               <div>
-                                <Avatar size={25}>{member.firstname[0].toUpperCase() + '' + member.lastname[0].toUpperCase()}</Avatar>
+                                <Avatar size={25} style={{ backgroundColor: color }}>
+                                  {member.firstname[0].toUpperCase() + '' + member.lastname[0].toUpperCase()}
+                                </Avatar>
                                 <span style={{ marginLeft: 8 }}>{member.firstname + ' ' + member.lastname}</span>
                               </div>
                             </Select.Option>)}

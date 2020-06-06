@@ -7,7 +7,6 @@ import { Router } from 'react-router';
 import { App } from './app';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.min.css';
-// import { BrowserRouter } from 'react-router-dom';
 
 // prepare store
 export const history = createBrowserHistory();

@@ -1,6 +1,6 @@
 import { reducerWithInitialState } from 'typescript-fsa-reducers';
 import * as actions from './actions';
-import { IUser, IUsers } from 'app/types';
+import { IUser, IUsers, Tab } from 'app/types';
 
 export interface IReducerShape {
   user: IUser | null;
@@ -8,6 +8,8 @@ export interface IReducerShape {
   isLoadingUser: boolean;
   isLoadingUsers: boolean;
   allUsers: IUsers | null;
+  activeTab: Tab;
+  editMode: boolean;
 }
 
 const initialState: IReducerShape = {
@@ -15,7 +17,9 @@ const initialState: IReducerShape = {
 	isLoggedIn: false,
   isLoadingUser: false,
   isLoadingUsers: false,
-	allUsers: null,
+  allUsers: null,
+  activeTab: 'about',
+  editMode: false,
 };
 
 export const reducer = reducerWithInitialState(initialState)
@@ -64,4 +68,25 @@ export const reducer = reducerWithInitialState(initialState)
 			isLoadingUsers: false,
 			allUsers: payload.result,
 		})
-	);
+  )
+  .case(
+		actions.changeActiveTab,
+		(state, payload): IReducerShape => ({
+      ...state,
+      activeTab: payload,
+		})
+  )
+  .case(
+		actions.toggleEditMode,
+		(state, payload): IReducerShape => ({
+      ...state,
+      editMode: payload,
+		})
+  )
+  .case(
+		actions.updateUser.started,
+		(state): IReducerShape => ({
+      ...state,
+      isLoadingUser: true,
+		})
+  );

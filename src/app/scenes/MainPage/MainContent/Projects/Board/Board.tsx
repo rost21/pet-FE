@@ -12,6 +12,7 @@ import { CreateTask } from './CreateTask';
 import { Task } from './Task';
 import { isUserOwnerProject, cutString } from 'app/utils/project';
 import { updateTask, setTaskModalVisible } from 'app/redux/task/actions';
+import { generateColor } from 'app/utils/common';
 
 const data = {
   lanes: [
@@ -111,7 +112,7 @@ export const Board: React.FC<IProps> = props => {
 
   const renderCard = (task: ITask) => {
     const { id = '', title = '', type = '', description = '', assignTo } = task;
-
+    const color = generateColor();
     return (
       <Card
         key={id}
@@ -126,7 +127,7 @@ export const Board: React.FC<IProps> = props => {
           </div>
           {!!assignTo && 
             <Tooltip title={assignTo.firstname + ' ' + assignTo.lastname}>
-              <Avatar>
+              <Avatar style={{ backgroundColor: color }}>
                 {(assignTo.firstname && (assignTo.firstname[0].toUpperCase() + '' + assignTo.lastname[0].toUpperCase())) || assignTo.username[0].toUpperCase()}
               </Avatar>
             </Tooltip>

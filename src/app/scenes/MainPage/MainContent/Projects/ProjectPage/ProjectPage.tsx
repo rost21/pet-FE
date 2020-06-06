@@ -19,7 +19,7 @@ import { Editable } from 'app/components/Editable';
 import { isUserOwnerProject, isProjectClosed, isUserMemberProject } from 'app/utils/project';
 import { AddMembers } from './AddMembers';
 import { Item } from './styled';
-import { formattingDescription } from 'app/utils/task';
+import { formattingByNewLine } from 'app/utils/task';
 
 interface IProps extends RouteComponentProps<{ id: string }> {}
 
@@ -202,7 +202,7 @@ export const ProjectPage: React.FC<IProps> = props => {
                   <s.DescriptionBody title={project.description}>
                     <Editable
                       canEdit={isUserOwner && !isProjectClosed(project)}
-                      text={formattingDescription(description)}
+                      text={formattingByNewLine(description)}
                       type="textarea"
                       placeholder="Start enter description"
                       childRef={descriptionRef}

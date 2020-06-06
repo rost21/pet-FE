@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import * as actions from '../../redux/auth/actions';
 import * as dayjs from 'dayjs';
 import { Input, Button, Checkbox, Form, Select, DatePicker, Row, Col } from 'antd';
-import { LoginFormContainer, FormTitle } from './styled';
+import { LoginFormContainer, FormTitle, FormItem } from './styled';
 import { RouteComponentProps } from 'react-router';
 import ROUTES from 'app/routes';
 import { showNotification } from 'app/utils/notifications';
@@ -59,18 +59,18 @@ export const RegistrationPage: React.FC<IProps> = props => {
   };
 
   const prefixSelector = (
-    <Form.Item name="prefix" noStyle>
+    <FormItem name="prefix" noStyle>
       <Select style={{ width: 70 }}>
         <Select.Option value="+38">+38</Select.Option>
         <Select.Option value="+1">+1</Select.Option>
       </Select>
-    </Form.Item>
+    </FormItem>
   );
 
   return (
     <LoginFormContainer>
       <img
-        src="https://www.brandbucket.com/sites/default/files/logo_uploads/278374/large_xlancer_0.png"
+        src="../../../assets/logo.png"
         width="260"
       />
       <FormTitle>Registration</FormTitle>
@@ -84,9 +84,9 @@ export const RegistrationPage: React.FC<IProps> = props => {
           prefix: '+38',
         }}
         scrollToFirstError
-        style={{ marginTop: 16 }}
+        style={{ marginTop: 10 }}
       >
-        <Form.Item
+        <FormItem
           name="email"
           label="E-mail"
           validateTrigger="onSubmit"
@@ -96,9 +96,9 @@ export const RegistrationPage: React.FC<IProps> = props => {
           ]}
         >
           <Input />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item
+        <FormItem
           name="username"
           label="Username"
           validateTrigger="onSubmit"
@@ -109,9 +109,9 @@ export const RegistrationPage: React.FC<IProps> = props => {
           ]}
         >
           <Input />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item
+        <FormItem
           name="password"
           label="Password"
           validateTrigger="onSubmit"
@@ -121,9 +121,9 @@ export const RegistrationPage: React.FC<IProps> = props => {
           ]}
         >
           <Input.Password />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item
+        <FormItem
           name="confirmPassword"
           label="Confirm Password"
           dependencies={['password']}
@@ -141,14 +141,14 @@ export const RegistrationPage: React.FC<IProps> = props => {
           ]}
         >
           <Input.Password />
-        </Form.Item>
+        </FormItem>
 
         <Row
           justify="end"
           gutter={8}
         >
           <Col span={12}>
-            <Form.Item
+            <FormItem
               name="firstname"
               label="Firstname"
               rules={[
@@ -156,10 +156,10 @@ export const RegistrationPage: React.FC<IProps> = props => {
               ]}
             >
               <Input placeholder="Firstname" style={{ width: '80%' }} />
-            </Form.Item>
+            </FormItem>
           </Col>
           <Col span={10}>
-            <Form.Item
+            <FormItem
               name="lastname"
               label="Lastname"
               rules={[
@@ -167,24 +167,42 @@ export const RegistrationPage: React.FC<IProps> = props => {
               ]}
             >
               <Input placeholder="Lastname" />
-            </Form.Item>
+            </FormItem>
           </Col>
         </Row>
 
-        <Form.Item
+        <FormItem
+          name="gender"
+          label="Gender"
+        >
+          <Select placeholder="Select gender" size="middle">
+            <Select.Option value="male">Male</Select.Option>
+            <Select.Option value="female">Female</Select.Option>
+          </Select>  
+        </FormItem>
+
+        <FormItem
+          name="location"
+          label="Location"
+        >
+          <Input placeholder="Example: London, UK" style={{ width: '100%' }} />    
+        </FormItem>
+
+        <FormItem
           name="dateOfBirth"
           label="Date of birth"
         >
-          <DatePicker style={{ width: '100%' }} />    
-        </Form.Item>
-        <Form.Item
+          <DatePicker style={{ width: '100%' }} />
+        </FormItem>
+
+        <FormItem
           name="phone"
           label="Phone Number"
         >
           <Input addonBefore={prefixSelector} type="number" style={{ width: '100%' }} />
-        </Form.Item>
+        </FormItem>
 
-        <Form.Item
+        <FormItem
           name="isCustomer"
           valuePropName="checked"
           {...tailFormItemLayout}
@@ -192,11 +210,11 @@ export const RegistrationPage: React.FC<IProps> = props => {
           <Checkbox checked={isCustomer} onChange={() => setIsCustomer(!isCustomer)}>
             I'm customer
           </Checkbox>
-        </Form.Item>
+        </FormItem>
 
         {!isCustomer && (
           <>
-            <Form.Item
+            <FormItem
               name="skills"
               label="Select skills"
             >
@@ -208,32 +226,32 @@ export const RegistrationPage: React.FC<IProps> = props => {
                 style={{ maxWidth: 500 }}
               >
                 {PROGRAMMING_LANGUAGES.map(item => <Select.Option key={item} value={item}>{item}</Select.Option>)}
-              </Select>            
-            </Form.Item>
+              </Select>
+            </FormItem>
 
-            <Form.Item
+            <FormItem
               name="role"
               label="Role"
             >
               <Input placeholder="Example: Fullstack developer" />
-            </Form.Item>
+            </FormItem>
             </>
           )}
 
-        <Form.Item
+        <FormItem
           name="about"
           label="About you"
         >
           <Input.TextArea placeholder="About" autoSize={{ maxRows: 4 }}/>
-        </Form.Item>
-        <Form.Item {...tailFormItemLayout}>
+        </FormItem>
+        <FormItem {...tailFormItemLayout}>
           <>
           <Button type="primary" htmlType="submit">
             Register
           </Button>
           <div style={{ marginTop: 8 }}>Or <a onClick={() => props.history.push(ROUTES.LOGIN)}>back to login</a></div>
           </>
-        </Form.Item>
+        </FormItem>
         
       </Form>
     </LoginFormContainer>

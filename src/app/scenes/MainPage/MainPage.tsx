@@ -43,7 +43,9 @@ export const MainPage: React.FC<IProps> = props => {
   return isLoggedIn ? (
     <StyledLayout>
       <Sider trigger={null} collapsible collapsed={collapsed}>
-        <div className="logo">Project</div>
+        <div className="logo">
+          <img src="../../../assets/logo.png" width="190" height="100" />
+        </div>
         <Menu theme="dark" mode="inline" selectedKeys={[selectedKey || 'main']}>
           <Menu.Item key="main" onClick={() => redirectTo(ROUTES.MAIN)}>
             <HomeOutlined />

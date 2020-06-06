@@ -24,3 +24,7 @@ export const FormTitle = styled.div`
 export const LoginForm = styled(Form)`
   max-width: 300px;
 `;
+
+export const FormItem = styled(Form.Item)`
+  margin-bottom: 12px !important;
+`;

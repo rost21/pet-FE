@@ -4,13 +4,26 @@ export interface IRegisterUserVariables {
   password: string;
   firstname: string;
   lastname: string;
+  gender: string;
   dateOfBirth?: string;
   isCustomer: boolean;
   phone?: string;
+  location?: string;
   skills?: string[];
   role?: string;
   about?: string;
 }
+
+export type UserFields = 'email' | 'firstname' | 'lastname' | 'gender' | 'dateOfBirth' | 'phone' | 'location' | 'skills' | 'role' | 'about';
+
+export type UpdateUserPayload = {
+  [key in UserFields]?: IUser[UserFields]
+}
+
+export interface UpdateUserResponse {
+  user: IUser;
+  isUpdated: boolean;
+} 
 
 export interface IRegisterUserResponse {
   isCreated: boolean;
@@ -44,6 +57,8 @@ export interface IUser {
   username: string;
   email: string;
   password: string;
+  gender: string;
+  location: string;
   phone: string;
   dateOfBirth: string;
   role: string;
@@ -149,3 +164,5 @@ export interface CreateCommentResponse {
   comment: IComment;
   isCreated: boolean;
 }
+
+export type Tab = 'timeline' | 'about' | 'edit';

@@ -9,6 +9,7 @@ interface IProps {
   canEdit?: boolean;
   onEndEditing?: () => void;
   childRef: React.MutableRefObject<any>;
+  style?: React.CSSProperties;
 }
 
 export const Editable: React.FC<IProps> = ({
@@ -57,7 +58,7 @@ export const Editable: React.FC<IProps> = ({
           {children}
         </div>
       ) : (
-        <span onClick={() => setEditing(true)}>
+        <span onClick={() => canEdit && setEditing(true)}>
             {text || placeholder || 'Editable content'}
         </span>
       )}
