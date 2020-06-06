@@ -14,6 +14,7 @@ var CleanWebpackPlugin = require('clean-webpack-plugin');
 const createStyledComponentsTransformer = require('typescript-plugin-styled-components')
   .createTransformer;
 const Dotenv = require('dotenv-webpack');
+const AntdDayjsWebpackPlugin = require('antd-dayjs-webpack-plugin');
 
 const styledComponentsTransformer = createStyledComponentsTransformer();
 
@@ -145,6 +146,9 @@ module.exports = {
     new MiniCssExtractPlugin({
       filename: '[hash].css',
       disable: !isProduction
+    }),
+    new AntdDayjsWebpackPlugin({
+      preset: 'antdv3'
     }),
     new HtmlWebpackPlugin({
       template: 'assets/index.html',

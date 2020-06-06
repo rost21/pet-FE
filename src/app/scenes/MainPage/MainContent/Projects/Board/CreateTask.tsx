@@ -33,8 +33,6 @@ export const CreateTask: React.FC<IProps> = props => {
       visible={props.drawerVisible}
       destroyOnClose
       onClose={() => {
-        // const unSelected = allDevelopers.map(user => ({ ...user, isSelected: false }));
-        // setAllDevelopers(unSelected);
         props.setDrawerVisible(false);
       }}
       footer={

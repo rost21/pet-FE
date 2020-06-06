@@ -6,7 +6,9 @@ import {
   ILoginUserResponse,
   IGetUserVariables,
   IUser,
-  IUsers
+  IUsers,
+  Tab,
+  UpdateUserPayload
 } from '../../types';
 
 const actionCreator = actionCreatorFactory('auth');
@@ -19,11 +21,14 @@ export const registration = actionCreator.async<
 
 export const login = actionCreator.async<ILoginUserVariables, ILoginUserResponse, string>('LOGIN');
 
-//type must be authoeized user
-export const setUser = actionCreator<{ id: string, username: string, email: string }>('SET_USER');
-
 export const logout = actionCreator('LOGOUT');
 
-export const getUser = actionCreator.async<IGetUserVariables, IUser, string>('GET_USER');
+export const getUser = actionCreator.async<IGetUserVariables | any, IUser, string>('GET_USER');
 
 export const getAllUsers = actionCreator.async<{}, IUsers, string>('GET_ALL_USERS');
+
+export const changeActiveTab = actionCreator<Tab>('CHANGE_ACTIVE_TAB');
+
+export const toggleEditMode = actionCreator<boolean>('TOGGLE_EDIT_MODE');
+
+export const updateUser = actionCreator.async<UpdateUserPayload, IUser, string>('UPDATE_USER');

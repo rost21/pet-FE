@@ -43,7 +43,7 @@ export const LoginPage: React.FC<IProps> = props => {
 
 	return (
 		<LoginFormContainer>
-			<img src="https://www.brandbucket.com/sites/default/files/logo_uploads/278374/large_xlancer_0.png" width="260" />
+			<img src="../../../assets/logo.png" width="260" />
       <FormTitle>
 			  <LockOutlined /> Login
 			</FormTitle>

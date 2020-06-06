@@ -1,10 +1,11 @@
-import { takeLatest, call, put } from 'redux-saga/effects';
+import { takeLatest, call, put, select } from 'redux-saga/effects';
 import * as actions from './actions';
-import { register as registerApi, login as loginApi, getUser as getUserApi, getUsers } from '../../graphql/user';
-import { ILoginUserResponse, IUser, IRegisterUserResponse } from '../../types';
+import { register as registerApi, login as loginApi, getUser as getUserApi, getUsers, updateUser } from '../../graphql/user';
+import { ILoginUserResponse, IUser, IRegisterUserResponse, UpdateUserResponse } from '../../types';
 import { history } from '../../../main';
 import ROUTES from '../../routes';
 import { showNotification } from 'app/utils/notifications';
+import { IRootReducer } from '../rootReducer';
 
 function* registration(action: ReturnType<typeof actions.registration.started>) {
   try {
@@ -103,10 +104,39 @@ function* getAllUsers() {
   }
 }
 
+function* updateUserSaga(action: ReturnType<typeof actions.updateUser.started>) {
+  try {
+    const { payload } = action;
+    const user: IUser = yield select((state: IRootReducer) => state.authReducer.user);
+    const { data: { updateUser: response } }: { data: { updateUser: UpdateUserResponse } } = yield call(updateUser, user.id, payload);
+    console.log('response: ', response);
+    if (!response.isUpdated) {
+      return;
+    }
+
+    const updatedUser = {
+      ...user,
+      ...response.user,
+    };
+
+    yield put(actions.getUser.done({ 
+      params: action.payload,
+      result: updatedUser,
+    }));
+  } catch (e) {
+    console.log(e);
+    yield put(actions.updateUser.failed({
+      params: action.payload,
+      error: e,
+    }));
+  }
+}
+
 export function* saga() {
   yield takeLatest(actions.registration.started, registration);
   yield takeLatest(actions.login.started, login);
   yield takeLatest(actions.logout, logout);
   yield takeLatest(actions.getUser.started, getUser);
   yield takeLatest(actions.getAllUsers.started, getAllUsers);
+  yield takeLatest(actions.updateUser.started, updateUserSaga);
 }
