@@ -7,12 +7,20 @@ export interface IReducerShape {
   allProjects: IProjects;
   isLoading: boolean;
   project: IProject | null;
+  filter: {
+    status: 'active' | 'all' | 'my';
+    search: string;
+  }
 }
 
 const initialState: IReducerShape = {
 	allProjects: [],
 	isLoading: false,
   project: null,
+  filter: {
+    status: 'active',
+    search: '',
+  }
 };
 
 export const reducer = reducerWithInitialState(initialState)
@@ -79,6 +87,28 @@ export const reducer = reducerWithInitialState(initialState)
     updateTask.started,
     (state): IReducerShape => ({
       ...state,
+      isLoading: true,
+    })
+  )
+  .case(
+    actions.changeFilterStatus,
+    (state, payload): IReducerShape => ({
+      ...state,
+      filter: {
+        ...state.filter,
+        status: payload,
+      },
+      isLoading: true,
+    })
+  )
+  .case(
+    actions.changeFilterSearch,
+    (state, payload): IReducerShape => ({
+      ...state,
+      filter: {
+        ...state.filter,
+        search: payload,
+      },
       isLoading: true,
     })
   );

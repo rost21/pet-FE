@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { AppstoreOutlined, HomeOutlined, UserOutlined } from '@ant-design/icons';
-import { Layout, Menu, Spin } from 'antd';
+import { Layout, Menu } from 'antd';
 import { StyledLayout, StyledHeader, StyledContent } from './styled';
 import { Header } from './Header/Header';
 import { ContentRouter } from './MainContent/Content';
 import ROUTES from 'app/routes';
 import { getUser, getAllUsers } from 'app/redux/auth/actions';
-import { getAllProjects } from 'app/redux/project/actions';
 import { IRootReducer } from 'app/redux/rootReducer';
 import { RouteComponentProps } from 'react-router';
 
@@ -18,11 +17,8 @@ interface IProps extends RouteComponentProps {}
 export const MainPage: React.FC<IProps> = props => {
   const [collapsed, setCollapsed] = React.useState(false);
   const dispatch = useDispatch();
-  const { isLoggedIn, isLoadingUser, isLoadingUsers } = useSelector((state: IRootReducer) => state.authReducer);
-  const { isLoading: isLoadingProjects } = useSelector((state: IRootReducer) => state.projectsReducer);
+  const { isLoggedIn } = useSelector((state: IRootReducer) => state.authReducer);
 
-  const isFetching = isLoadingUser || isLoadingUsers || isLoadingProjects;
-  
   const onCollapse = React.useCallback(() => {
     setCollapsed(!collapsed);
   }, [collapsed]);
@@ -31,7 +27,6 @@ export const MainPage: React.FC<IProps> = props => {
     const token = localStorage.getItem('token');
     dispatch(getUser.started({ token: token! }));
     dispatch(getAllUsers.started({}));
-    dispatch(getAllProjects.started(''));
     // component will unmount
     return () => {};
   }, []);
@@ -70,9 +65,7 @@ export const MainPage: React.FC<IProps> = props => {
           />
         </StyledHeader>
         <StyledContent>
-          <Spin spinning={isFetching}>
             <ContentRouter />
-          </Spin>
         </StyledContent>
       </Layout>
     </StyledLayout>

@@ -24,7 +24,11 @@ interface IProps {
 
 export const Header: React.FC<IProps> = props => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state: IRootReducer) => state.authReducer);
+  const { user, isLoadingUser, isLoadingUsers } = useSelector((state: IRootReducer) => state.authReducer);
+  const { isLoading: isLoadingProjects } = useSelector((state: IRootReducer) => state.projectsReducer);
+
+  const isFetching = isLoadingUser || isLoadingUsers || isLoadingProjects;
+
   const [drawerVisible, setDrawerVisible] = React.useState(false);
 
   const isUserCustomer = React.useMemo(() => user && isCustomer(user!), [user]);
@@ -52,7 +56,7 @@ export const Header: React.FC<IProps> = props => {
 
   return (
     <HeaderContainer>
-      <div style={{ display: 'flex', alignItems: 'center', width: 170, justifyContent: 'space-between' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         {
           props.collapsed ? 
             <MenuUnfoldOutlined
@@ -64,7 +68,7 @@ export const Header: React.FC<IProps> = props => {
               style={iconStyle} 
             />
         }
-        {isUserCustomer && <Button type="primary" onClick={() => setDrawerVisible(true)}>
+        {isUserCustomer && <Button type="primary" loading={isFetching} onClick={() => setDrawerVisible(true)} style={{ marginLeft: 24 }}>
           Create Project
         </Button>}
       </div>

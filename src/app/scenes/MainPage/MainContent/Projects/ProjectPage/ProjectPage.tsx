@@ -10,7 +10,7 @@ import {
   deleteUserFromMembers
 } from 'app/redux/project/actions';
 import { IRootReducer } from 'app/redux/rootReducer';
-import { Spin, Button, Modal, List, Input } from 'antd';
+import { Spin, Button, Modal, List, Input, Avatar } from 'antd';
 import * as s from '../styled';
 import ROUTES from 'app/routes';
 import { IUsers, IUser } from 'app/types';
@@ -42,16 +42,15 @@ export const ProjectPage: React.FC<IProps> = props => {
   const [description, setDescription] = React.useState('');
 
   React.useEffect(() => {
-      dispatch(getSingleProject.started(id));
-      // component will unmount
-      return () => {
-        dispatch(getSingleProject.done({
-          params: id,
-          result: null,
-        }));
-      };
-    }, [id]
-  );
+    dispatch(getSingleProject.started(id));
+    // component will unmount
+    return () => {
+      dispatch(getSingleProject.done({
+        params: id,
+        result: null,
+      }));
+    };
+  }, [id]);
 
   React.useEffect(() => {
     setTitle(project ? project.title : '');
@@ -109,14 +108,14 @@ export const ProjectPage: React.FC<IProps> = props => {
         style={{ maxHeight: '100%', overflowY: 'auto' }}
         dataSource={members}
         renderItem={member => {
-          const { firstname = '', lastname = '', rankings } = member;
+          const { firstname = '', lastname = '' } = member;
           const user = `${firstname[0].toUpperCase()}${lastname[0].toUpperCase()}`;
           return (
             <Item key={member.id} onClick={() => renderSteps(member.id)}>
               <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <s.UserAvatar>{user}</s.UserAvatar>
-                  <h3 style={{ marginLeft: 10 }}>{`${firstname || ''} ${lastname || ''} ${rankings || ''}`}</h3>
+                  <Avatar style={{ fontSize: 25, color: 'black' }}>{user}</Avatar>
+                  <h3 style={{ marginLeft: 10, marginBottom: 5 }}>{`${firstname || ''} ${lastname || ''}`}</h3>
                 </div>
                 {isUserOwner && <CloseOutlined style={{ color: 'red' }} onClick={() => onDeleteMember(member.id)} />}
               </div>
@@ -195,14 +194,14 @@ export const ProjectPage: React.FC<IProps> = props => {
             <s.ProjectBody>
                 <s.ProjectDescription>
                   <div style={{ display: 'flex', alignItems: 'baseline' }}>
-                    <h3 style={{ fontWeight: 'normal' }}>Created by  {project.owner.username} {dayjs(+project.startDate).format('DD MMM YYYY')}
+                    <h3 style={{ fontWeight: 'normal' }}>Created by  {project.owner.firstname + ' ' + project.owner.lastname} {dayjs(+project.startDate).format('DD MMM YYYY')}
                     {project.endDate && `. Closed ${dayjs(+project.endDate).format('DD MMM YYYY')}`} </h3>
                   </div>
                   <s.Title>Description</s.Title>
                   <s.DescriptionBody title={project.description}>
                     <Editable
                       canEdit={isUserOwner && !isProjectClosed(project)}
-                      text={formattingByNewLine(description)}
+                      text={<h3 style={{ fontWeight: 'normal' }}>{formattingByNewLine(description)}</h3>}
                       type="textarea"
                       placeholder="Start enter description"
                       childRef={descriptionRef}

@@ -128,14 +128,16 @@ export const Profile: React.FC = () => {
               />
             </Editable>
           </div>
-          <div style={{ marginBottom: 24 }}>
+          <div style={{ marginBottom: 24, display: 'flex', alignItems: 'center' }}>
+            Role:
             <Editable
               childRef={roleRef}
               canEdit={editMode}
               type="input"
-              placeholder="N/A"
-              text={<h3 style={{ color: '#00A6FF' }}>{user!.role}</h3>}
+              placeholder="Start enter your role"
+              text={user!.role && <h3 style={{ color: '#00A6FF', marginBottom: 0 }}>{user!.role}</h3>}
               onEndEditing={onChangeRole}
+              style={{ marginLeft: 8 }}
             >
               <Input
                 ref={roleRef}
@@ -151,11 +153,11 @@ export const Profile: React.FC = () => {
           <div style={{ display: 'flex', flexDirection: 'column', marginBottom: 16 }}>
               <h4 style={{ margin: 0 }}>Rankings</h4>
               <div style={{ display: 'flex' }}>
-                <h2>{7}</h2>
-                <Rate allowHalf disabled value={7/2} style={{ color: '#00A6FF', marginLeft: 8 }} />
+                <h2>{user!.rankings}</h2>
+                <Rate allowHalf disabled value={user!.rankings/2} style={{ color: '#00A6FF', marginLeft: 8 }} />
               </div>
           </div>
-          <div style={{ width: '40%' }}>
+          <div>
             <Tabs activeKey={activeTab} size="large" onChange={handleChangeTab}>
               <Tabs.TabPane tab="Timeline" key="timeline">
                 <Timeline />

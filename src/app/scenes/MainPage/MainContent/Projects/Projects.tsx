@@ -1,103 +1,31 @@
 import * as React from 'react';
 import { RouteComponentProps } from 'react-router';
-import {
-  useSelector
-} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import { Container, Title, ProjectsContainer, ProjectsHeader } from './styled';
 import { IRootReducer } from 'app/redux/rootReducer';
 import { ProjectCard } from './ProjectCard';
-import { Input,
-  Spin, Select
-} from 'antd';
-import { debounce } from 'app/utils/common';
-import { IProjects } from 'app/types';
+import { Input, Spin, Select } from 'antd';
+import { getAllProjects, changeFilterStatus, changeFilterSearch } from 'app/redux/project/actions';
 
 interface IProps extends RouteComponentProps {}
 
 export const Projects: React.FC<IProps> = props => {
-  const { allProjects: projects } = useSelector((state: IRootReducer) => state.projectsReducer);
-  const { user } = useSelector((state: IRootReducer) => state.authReducer);
-  const [stateProjects, setProjects] = React.useState<IProjects>([]);
-  const [search, setSearch] = React.useState('');
-  const [typeOfProjects, setTypeOfProjects] = React.useState('all');
-  const [isLoading, setIsLoading] = React.useState(false);
+  const dispatch = useDispatch();
+  const { allProjects: projects, filter: { status, search }, isLoading } = useSelector((state: IRootReducer) => state.projectsReducer);
 
-  React.useEffect(
-    () => {
-      setProjects(projects);
-      // component will unmount
-      return () => {};
-    },
-    [projects]
-  );
+  React.useEffect(() => {
+    dispatch(getAllProjects.started(''));
+    // component will unmount
+    return () => {};
+  },  []);
 
   const handleChangeSearch = (e: React.FormEvent<HTMLInputElement>) => {
     const searchValue = e.currentTarget.value;
-    const type = typeOfProjects;
-
-    setSearch(searchValue);
-
-    debounce(() => {
-      setIsLoading(true);
-      debounce(() => {
-        let currentList = [];
-
-        let newList = [];
-  
-        if (searchValue !== '') {
-
-          currentList = projects;
-  
-          newList = currentList.filter(item => {
-            const title = item.title.toLowerCase();
-            const filter = searchValue.toLowerCase();
-
-            const members = item.members;
-  
-            if (type === 'my') {
-              return members.some(member => member.id === user!.id && title.includes(filter));
-            } else {
-              return title.includes(filter);
-            }
-          });
-        } else {
-          if (type === 'my') {
-            currentList = projects;
-            newList = currentList.filter(item => item.members.some(member => member.id === user!.id));
-          } else {
-            newList = projects;
-          }
-        }
-        setIsLoading(false);
-        setProjects(newList);
-      }, 1500);
-    }, 1000);
+    dispatch(changeFilterSearch(searchValue));
   };
 
-  const handleChangeView = (value: string) => {
-    setTypeOfProjects(value);
-    const searchValue = search;
-
-    let currentList = [];
-        
-    let newList = [];
-
-    if (value === 'my') {
-      currentList = projects;
-
-      newList = currentList.filter(item => {
-        const title = item.title.toLowerCase();
-        const filter = searchValue.toLowerCase();
-        const lc = item.members;
-        
-        return lc.some(item => item.id === user!.id && title.includes(filter));
-      });
-    } else {
-      currentList = projects;
-      newList = currentList.filter(item => item.title.toLowerCase().includes(searchValue));
-    }
-    
-    setProjects(newList);
+  const handleChangeView = (value: 'my' | 'all' | 'active') => {
+    dispatch(changeFilterStatus(value));
   };
 
   return (
@@ -107,7 +35,8 @@ export const Projects: React.FC<IProps> = props => {
           <Title>Projects</Title>
         </div>
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <Select size="large" value={typeOfProjects} onChange={handleChangeView} style={{ width: 160, marginRight: 16 }}>
+          <Select size="large" value={status} onChange={handleChangeView} style={{ width: 160, marginRight: 16 }}>
+            <Select.Option value="active">Active projects</Select.Option>
             <Select.Option value="all">All projects</Select.Option>
             <Select.Option value="my">My projects</Select.Option>
           </Select>
@@ -123,8 +52,8 @@ export const Projects: React.FC<IProps> = props => {
       </ProjectsHeader>
       <Spin spinning={isLoading}>
         <ProjectsContainer>
-          {stateProjects && stateProjects.length ?
-            stateProjects.map((project) => <ProjectCard key={project.id} project={project} redirectTo={props.history.push} />) :
+          {projects && projects.length ?
+            projects.map(project => <ProjectCard key={project.id} project={project} redirectTo={props.history.push} />) :
             <div
               style={{
                 display: 'flex',

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import * as actions from '../../redux/auth/actions';
 import * as dayjs from 'dayjs';
 import { Input, Button, Checkbox, Form, Select, DatePicker, Row, Col } from 'antd';
@@ -8,6 +8,7 @@ import { RouteComponentProps } from 'react-router';
 import ROUTES from 'app/routes';
 import { showNotification } from 'app/utils/notifications';
 import { PROGRAMMING_LANGUAGES } from 'app/utils/constants';
+import { IRootReducer } from 'app/redux/rootReducer';
 
 const formItemLayout = {
   labelCol: {
@@ -37,6 +38,9 @@ interface IProps extends RouteComponentProps {}
 
 export const RegistrationPage: React.FC<IProps> = props => {
   const dispatch = useDispatch();
+
+  const { isLoading } = useSelector((state: IRootReducer) => state.authReducer);
+
   const [isCustomer, setIsCustomer] = React.useState(false);
   const [form] = Form.useForm();
 
@@ -152,7 +156,7 @@ export const RegistrationPage: React.FC<IProps> = props => {
               name="firstname"
               label="Firstname"
               rules={[
-                { required: true, message: 'Please confirm your firstname!' }
+                { required: true, message: 'Please input your firstname!' }
               ]}
             >
               <Input placeholder="Firstname" style={{ width: '80%' }} />
@@ -163,7 +167,7 @@ export const RegistrationPage: React.FC<IProps> = props => {
               name="lastname"
               label="Lastname"
               rules={[
-                { required: true, message: 'Please confirm your lastname!' }
+                { required: true, message: 'Please input your lastname!' }
               ]}
             >
               <Input placeholder="Lastname" />
@@ -174,6 +178,9 @@ export const RegistrationPage: React.FC<IProps> = props => {
         <FormItem
           name="gender"
           label="Gender"
+          rules={[
+            { required: true, message: 'Please select your gender!' }
+          ]}
         >
           <Select placeholder="Select gender" size="middle">
             <Select.Option value="male">Male</Select.Option>
@@ -229,14 +236,15 @@ export const RegistrationPage: React.FC<IProps> = props => {
               </Select>
             </FormItem>
 
-            <FormItem
-              name="role"
-              label="Role"
-            >
-              <Input placeholder="Example: Fullstack developer" />
-            </FormItem>
-            </>
-          )}
+          </>
+        )}
+
+        <FormItem
+          name="role"
+          label="Role"
+        >
+          <Input placeholder="Example: Fullstack developer" />
+        </FormItem>
 
         <FormItem
           name="about"
@@ -246,7 +254,7 @@ export const RegistrationPage: React.FC<IProps> = props => {
         </FormItem>
         <FormItem {...tailFormItemLayout}>
           <>
-          <Button type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit" loading={isLoading}>
             Register
           </Button>
           <div style={{ marginTop: 8 }}>Or <a onClick={() => props.history.push(ROUTES.LOGIN)}>back to login</a></div>

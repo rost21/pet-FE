@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Drawer, Button, Form, Input, List, Popover, Select } from 'antd';
-// import { PROGRAMMING_LANGUAGES } from 'app/utils/constants';
 import { UserSelect, Item, SelectableRow } from '../MainContent/Projects/ProjectPage/styled';
 import { CheckOutlined } from '@ant-design/icons';
 import { IUser } from 'app/types';
@@ -131,7 +130,6 @@ export const CreateProject: React.FC<IProps> = props => {
             name="members"
             label="Members"
             style={{ marginBottom: 0 }}
-            // rules={[{ required: true, message: 'Please enter project description' }]}
           >
             <Select
               mode="multiple"
@@ -143,14 +141,14 @@ export const CreateProject: React.FC<IProps> = props => {
             >
               {PROGRAMMING_LANGUAGES.map(item => <Select.Option key={item} value={item}>{item}</Select.Option>)}
             </Select>
-            <UserSelect>
+            <UserSelect style={{ maxHeight: 490 }}>
               <List
                 dataSource={allDevelopers}
                 renderItem={user => (
                   <Item key={user.id} onClick={() => onSelectDeveloper(user.id)}>
                     <SelectableRow>
                       <Popover title={`${user.firstname} ${user.lastname}`} placement="right" content={renderUserPopover(user)}>
-                        <span>{user.username}</span>
+                        <span>{user.firstname + ' ' + user.lastname}</span>
                       </Popover>                          
                       {user.isSelected && <CheckOutlined style={{ color: '#1890ff' }} />}
                     </SelectableRow>

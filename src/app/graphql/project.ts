@@ -3,8 +3,8 @@ import gql from 'graphql-tag';
 import { CreateProjectPayload } from 'app/types';
 
 const GET_PROJECTS = gql`
-  query projects {
-    projects {
+  query projects($filter: Filter) {
+    projects (filter: $filter) {
       id
       title
       description
@@ -216,8 +216,8 @@ const CREATE_PROJECT = gql`
   }
 `;
 
-export const getProjects = () =>
-	client.query({ query: GET_PROJECTS });
+export const getProjects = (filter: { status: 'my' | 'all' | 'active', search: string }) =>
+	client.query({ query: GET_PROJECTS, variables: { filter } });
 
 export const getProject = (id: string) => 
 	client.query({ query: GET_PROJECT, variables: { id } });
