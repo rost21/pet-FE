@@ -21,11 +21,11 @@ export const ProjectsContainer = styled.div`
   overflow-y: auto;
   width: 100%;
   height: calc(100% - 64px);
-  margin: 10px 0;
+  padding: 10px 5px;
 `;
 
 export const ProjectCardStyled = styled(Card)`
-  width: 300px;
+  width: 310px;
   min-height: 160px;
   max-height: 200px;
   margin: 10px 10px 0 0 !important;

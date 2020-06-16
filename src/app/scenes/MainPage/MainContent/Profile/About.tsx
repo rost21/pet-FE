@@ -8,6 +8,7 @@ import { Editable } from 'app/components/Editable';
 import { Input, DatePicker, Select } from 'antd';
 import { toggleEditMode, updateUser } from 'app/redux/auth/actions';
 import { PROGRAMMING_LANGUAGES } from 'app/utils/constants';
+import { isCustomer } from 'app/utils/project';
 
 export const About = () => {
   const dispatch = useDispatch();
@@ -35,28 +36,42 @@ export const About = () => {
   }, []);
 
   const onChangePhone = () => {
-    dispatch(updateUser.started({ phone }));
+    if (phone !== user!.phone) {
+      dispatch(updateUser.started({ phone }));
+    }
   };
 
   const onChangeEmail = () => {
-    dispatch(updateUser.started({ email }));
+    if (email !== user!.email) {
+      dispatch(updateUser.started({ email }));
+    }
   };
 
   const onChangeDateOfBirth = () => {
-    dispatch(updateUser.started({ dateOfBirth: `${dayjs(+dateOfBirth).valueOf()}` }));
+    const dateOfBirthValue = dayjs(+dateOfBirth).valueOf().toString();
+    if (dateOfBirth !== dateOfBirthValue) {
+      dispatch(updateUser.started({ dateOfBirth: dateOfBirthValue }));
+    }
   };
 
   const onChangeGender = (gender: string) => {
-    console.log(gender);
     setGender(gender);
+    setTimeout(() => {
+      dispatch(updateUser.started({ gender }
+      ));
+    }, 500);
   };
 
   const onChangeSkills = () => {
-    dispatch(updateUser.started({ skills }));
+    if (skills !== user!.skills) {
+      dispatch(updateUser.started({ skills }));
+    }
   };
 
   const onChangeAbout = () => {
-    dispatch(updateUser.started({ about }));
+    if (about !== user!.about) {
+      dispatch(updateUser.started({ about }));
+    }
   };
 
   // @ts-ignore
@@ -130,6 +145,7 @@ export const About = () => {
           type="select"
           placeholder="N/A"
           text={user!.gender}
+          style={{ textTransform: 'capitalize' }}
         >
           <div>
             <Select
@@ -145,30 +161,32 @@ export const About = () => {
           </div>
         </Editable>
       </InformationRow>
-      <InformationRow>
-        <InformationRowKey>Skills:</InformationRowKey>
-        <Editable
-          childRef={skillsRef}
-          canEdit={editMode}
-          type="textarea"
-          placeholder="N/A"
-          text={user!.skills.map(skill => <p key={skill} style={{ margin: 0 }}>{skill}</p>)}
-          onEndEditing={onChangeSkills}
-        >
-          <Select
-            ref={skillsRef}
-            value={skills}
-            mode="multiple"
-            placeholder="Select languages"
-            size="middle"
-            showSearch={false}
-            style={{ maxWidth: 500 }}
-            onChange={(items) => setSkills(items)}
+      {!isCustomer(user!) && 
+        <InformationRow>
+          <InformationRowKey>Skills:</InformationRowKey>
+          <Editable
+            childRef={skillsRef}
+            canEdit={editMode}
+            type="textarea"
+            placeholder="N/A"
+            text={user!.skills.map(skill => <p key={skill} style={{ margin: 0 }}>{skill}</p>)}
+            onEndEditing={onChangeSkills}
           >
-            {PROGRAMMING_LANGUAGES.map(item => <Select.Option key={item} value={item}>{item}</Select.Option>)}
-          </Select>
-        </Editable>
-      </InformationRow>
+            <Select
+              ref={skillsRef}
+              value={skills}
+              mode="multiple"
+              placeholder="Select languages"
+              size="middle"
+              showSearch={false}
+              style={{ maxWidth: 500 }}
+              onChange={(items) => setSkills(items)}
+            >
+              {PROGRAMMING_LANGUAGES.map(item => <Select.Option key={item} value={item}>{item}</Select.Option>)}
+            </Select>
+          </Editable>
+        </InformationRow>
+      }
       <InformationRow>
         <InformationRowKey>About:</InformationRowKey>
         <Editable
@@ -176,7 +194,7 @@ export const About = () => {
           canEdit={editMode}
           type="textarea"
           placeholder="N/A"
-          text={<div>{formattingByNewLine(user!.about)}</div>}
+          text={user!.about && <div>{formattingByNewLine(user!.about)}</div>}
           onEndEditing={onChangeAbout}
           style={{ width: '100%' }}
         >

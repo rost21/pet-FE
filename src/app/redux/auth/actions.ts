@@ -1,21 +1,20 @@
 import { actionCreatorFactory } from 'typescript-fsa';
 import {
   IRegisterUserVariables,
-  IRegisterUserResponse,
   ILoginUserVariables,
   ILoginUserResponse,
   IGetUserVariables,
   IUser,
   IUsers,
   Tab,
-  UpdateUserPayload
+  UpdateUserPayload,
 } from '../../types';
 
 const actionCreator = actionCreatorFactory('auth');
 
 export const registration = actionCreator.async<
   IRegisterUserVariables,
-  IRegisterUserResponse,
+  null,
   string
 >('REGISTRATION');
 

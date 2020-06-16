@@ -5,6 +5,7 @@ import { IUser, IUsers, Tab } from 'app/types';
 export interface IReducerShape {
   user: IUser | null;
   isLoggedIn: boolean;
+  isLoading: boolean;
   isLoadingUser: boolean;
   isLoadingUsers: boolean;
   allUsers: IUsers | null;
@@ -14,7 +15,8 @@ export interface IReducerShape {
 
 const initialState: IReducerShape = {
 	user: null,
-	isLoggedIn: false,
+  isLoggedIn: false,
+  isLoading: false,
   isLoadingUser: false,
   isLoadingUsers: false,
   allUsers: null,
@@ -23,11 +25,27 @@ const initialState: IReducerShape = {
 };
 
 export const reducer = reducerWithInitialState(initialState)
+  .cases(
+    [actions.registration.started, actions.registration.failed,
+    actions.login.started, actions.login.failed],
+    (state): IReducerShape => ({
+      ...state,
+      isLoading: !state.isLoading,
+    })  
+  )
+  .case(
+		actions.registration.done,
+		(state): IReducerShape => ({
+			...state,
+			isLoading: false,
+		})
+  )
 	.case(
 		actions.login.done,
 		(state): IReducerShape => ({
 			...state,
-			isLoggedIn: true,
+      isLoggedIn: true,
+      isLoading: false,
 		})
 	)
 	.case(

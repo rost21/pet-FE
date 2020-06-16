@@ -6,10 +6,15 @@ import { getProjects, getProject, updateProject, createProject } from 'app/graph
 import { IProjects, IProject, UpdateProjectResponse, CreateProjectResponse, IUser } from 'app/types';
 import { IRootReducer } from '../rootReducer';
 import { showNotification } from 'app/utils/notifications';
+import { IReducerShape } from './reducer';
 
 function* getAllProjects() {
   try {
-    const { data: { projects: response } }: { data: { projects: IProjects } } = yield call(getProjects);
+    const { filter: { status, search } }: IReducerShape = yield select((state: IRootReducer) => state.projectsReducer);
+
+    const payload = { status, search };
+    
+    const { data: { projects: response } }: { data: { projects: IProjects } } = yield call(getProjects, payload);
 
     yield put(actions.getAllProjects.done({
       params: '',
@@ -242,24 +247,8 @@ function* createNewProject(action: ReturnType<typeof actions.createProject.start
   }
 }
 
-// function* findProjects(action: ReturnType<typeof actions.findProjects>) {
-//   const searchValue = action.payload;
-//   const { projects, projectsForSearch }: { projects: IProjects, projectsForSearch: IProjects } = yield select((state: IRootReducer) => state.project);
-  
-//   console.log('projects: ', projects);
-//   console.log('projectsForSearch: ', projectsForSearch);
-
-//   if (!searchValue.length) {
-//     yield put(actions.setProjects(projects));
-//     return;
-//   }
-
-//   const filtered = projectsForSearch.filter(project => project.title.includes(searchValue));
-//   yield put(actions.setProjects(filtered));
-// }
-
 export function* saga() {
-  yield takeLatest(actions.getAllProjects.started, getAllProjects);
+  yield takeLatest([actions.getAllProjects.started, actions.changeFilterStatus, actions.changeFilterSearch], getAllProjects);
   yield takeLatest(actions.getSingleProject.started, getSingleProject);
   yield takeLatest(actions.closeProject.started, closeProject);
   yield takeLatest(actions.addMembersToProject.started, addMembersToProject);

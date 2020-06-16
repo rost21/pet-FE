@@ -70,7 +70,7 @@ export const AddMembers: React.FC<IProps> = props => {
       if (id === dev.id) {
         return { ...dev, isSelected: !dev.isSelected };
       }
-      return { ...dev };
+      return dev;
     });
     setAllDevelopers(updatedDevelopers);
   };
@@ -112,7 +112,7 @@ export const AddMembers: React.FC<IProps> = props => {
       >
         {PROGRAMMING_LANGUAGES.map(item => <Select.Option key={item} value={item}>{item}</Select.Option>)}
       </Select>
-      <UserSelect>
+      <UserSelect style={{ maxHeight: 'calc(100% - 70px)' }}>
         <List
           dataSource={developersNotInProject!}
           renderItem={user => (

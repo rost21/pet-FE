@@ -20,3 +20,7 @@ export const changeProjectTitle = actionCreator.async<string, UpdateProjectRespo
 export const changeProjectDescription = actionCreator.async<string, UpdateProjectResponse, string>('CHANGE_PROJECT_DESCRIPTION');
 
 export const deleteUserFromMembers = actionCreator.async<string, UpdateProjectResponse, string>('DELETE_USER_FROM_MEMBERS');
+
+export const changeFilterStatus = actionCreator<'active' | 'all' | 'my'>('CHANGE_FILTER_STATUS');
+
+export const changeFilterSearch = actionCreator<string>('CHANGE_FILTER_SEARCH');

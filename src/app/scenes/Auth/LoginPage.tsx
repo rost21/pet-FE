@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { LockOutlined } from '@ant-design/icons';
 import { Form } from 'antd';
 import { Input, Button } from 'antd';
@@ -7,6 +7,7 @@ import { LoginFormContainer, FormTitle } from './styled';
 import { RouteComponentProps } from 'react-router';
 import ROUTES from '../../routes';
 import * as actions from '../../redux/auth/actions';
+import { IRootReducer } from 'app/redux/rootReducer';
 
 interface IProps extends RouteComponentProps {}
 
@@ -35,6 +36,9 @@ const tailFormItemLayout = {
 
 export const LoginPage: React.FC<IProps> = props => {
   const dispatch = useDispatch();
+
+  const { isLoading } = useSelector((state: IRootReducer) => state.authReducer);
+
   const [form] = Form.useForm();
 
   const onFinish = (values: any) => {    
@@ -86,7 +90,7 @@ export const LoginPage: React.FC<IProps> = props => {
 
         <Form.Item {...tailFormItemLayout}>
           <>
-            <Button type="primary" htmlType="submit" className="login-form-button">
+            <Button type="primary" htmlType="submit" className="login-form-button" loading={isLoading}>
               Log in
             </Button>
             <div style={{ marginTop: 8 }}>

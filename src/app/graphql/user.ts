@@ -19,6 +19,7 @@ const GET_USER = gql`
       lastname
       username
       email
+      gender
       phone
       dateOfBirth
       role
@@ -65,6 +66,7 @@ const UPDATE_USER = gql`
         firstname
         lastname
         email
+        gender
         phone
         dateOfBirth
         role

@@ -4,7 +4,7 @@ import { List } from 'antd';
 const { Item: _Item } = List;
 
 export const UserSelect = styled.div`
-  height: 500px;
+  max-height: 500px;
   overflow-y: auto;
   margin-top: 8px;
 `;

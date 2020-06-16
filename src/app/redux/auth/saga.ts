@@ -1,7 +1,11 @@
 import { takeLatest, call, put, select } from 'redux-saga/effects';
 import * as actions from './actions';
-import { register as registerApi, login as loginApi, getUser as getUserApi, getUsers, updateUser } from '../../graphql/user';
-import { ILoginUserResponse, IUser, IRegisterUserResponse, UpdateUserResponse } from '../../types';
+import { 
+  register as registerApi, 
+  login as loginApi, getUser as getUserApi, getUsers, updateUser } from '../../graphql/user';
+import { ILoginUserResponse, IUser, 
+  IRegisterUserResponse, 
+  UpdateUserResponse, IUsers } from '../../types';
 import { history } from '../../../main';
 import ROUTES from '../../routes';
 import { showNotification } from 'app/utils/notifications';
@@ -18,9 +22,17 @@ function* registration(action: ReturnType<typeof actions.registration.started>) 
     }
 
     showNotification('Successful registration', 'success');
+    yield put(actions.registration.done({ 
+      params: action.payload, 
+      result: null 
+    }));
     history.push(ROUTES.LOGIN);
   } catch (e) {
     console.error(e);
+    yield put(actions.registration.failed({
+      params: action.payload,
+      error: e,
+    }));
   }
 }
 
@@ -70,6 +82,11 @@ function* getUser(action: ReturnType<typeof actions.getUser.started>) {
     }
     const { data: { getUser: response } }: { data: { getUser: IUser } } = yield call(getUserApi, token);
   
+    if (!response) {
+      yield logout();
+      return;
+    }
+
     yield put(actions.getUser.done({ 
       params: action.payload,
       result: response,
@@ -85,7 +102,7 @@ function* getUser(action: ReturnType<typeof actions.getUser.started>) {
 
 function* getAllUsers() {
   try {
-    const { data: { users: response } } = yield call(getUsers);
+    const { data: { users: response } }: { data: { users: IUsers } } = yield call(getUsers);
 
     if (!response) {
       return;

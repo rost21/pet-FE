@@ -16,10 +16,8 @@ import { PopoverRow } from 'app/scenes/MainPage/Header/styled';
 import { ALL_TYPES } from 'app/utils/constants';
 import { UserOutlined } from '@ant-design/icons';
 import { formattingByNewLine } from 'app/utils/task';
-import { generateColor } from 'app/utils/common';
 
 const CommentList = ({ comments }: { comments: IComment[] }) => {
-  const color = generateColor();
   return (
     <List
       dataSource={comments}
@@ -31,7 +29,7 @@ const CommentList = ({ comments }: { comments: IComment[] }) => {
           content={<p>{props.comment}</p>} 
           author={props.author.firstname + ' ' + props.author.lastname}
           datetime={dayjs(+props.postedDate).format('DD MMM YYYY, HH:mm')}
-          avatar={<Avatar style={{ backgroundColor: color }}>{props.author.firstname[0].toUpperCase() + '' + props.author.lastname[0].toUpperCase()}</Avatar>}
+          avatar={<Avatar >{props.author.firstname[0].toUpperCase() + '' + props.author.lastname[0].toUpperCase()}</Avatar>}
         />}
     />
   );
@@ -88,7 +86,7 @@ export const Task = () => {
   }, [task]);
 
   const isOwner = React.useMemo(() => project && isUserOwnerProject(user!, project!), [user, project]);
-  const isAssigned = React.useMemo(() => task && task!.assignTo.id === user!.id, [user, task]);
+  const isAssigned = React.useMemo(() => task && task!.assignTo && task!.assignTo.id === user!.id, [user, task]);
 
   const renderIcon = (type: 'bug' | 'story' | 'improvement') => {
     if (!type) {
@@ -185,8 +183,6 @@ export const Task = () => {
           </Tooltip>
         </Popover>}
     </div>;
-
-  const color = React.useMemo(() => generateColor(), [project]);
 
   return (
     <Modal
@@ -310,7 +306,7 @@ export const Task = () => {
                               disabled={task.assignTo && task.assignTo.id === member.id}
                             >
                               <div>
-                                <Avatar size={25} style={{ backgroundColor: color }}>
+                                <Avatar size={25}>
                                   {member.firstname[0].toUpperCase() + '' + member.lastname[0].toUpperCase()}
                                 </Avatar>
                                 <span style={{ marginLeft: 8 }}>{member.firstname + ' ' + member.lastname}</span>
