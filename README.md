@@ -1,6 +1,4 @@
-# Frontend part of dimplom work
-
-Based on react-redux-webpack-typescript boilerplate
+# Frontend part of pet project
 
 ## Installation
 
